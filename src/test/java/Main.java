@@ -5,7 +5,7 @@ public class Main {
     public static JCMD engine = new JCMD();
 
     public static void main(String[] args) {
-        engine.register(new Version(engine));
+        engine.registerBase();
         engine.run();
     }
 }

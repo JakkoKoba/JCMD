@@ -1,5 +1,6 @@
 package org.jcmd.core;
 
+import org.jcmd.commands.*;
 import java.util.*;
 
 public class JCMD {
@@ -7,10 +8,10 @@ public class JCMD {
     private final Scanner scanner = new Scanner(System.in);
     private boolean running = true;
 
-    private String jcmdVersion = "0.1.0";
+    private static final String JCMD_VERSION = "0.1.0";
 
     public String getJcmdVersion() {
-        return jcmdVersion;
+        return JCMD_VERSION;
     }
     public void run() {
         System.out.println("JCMD started. Type 'exit' to leave.");
@@ -60,6 +61,14 @@ public class JCMD {
         }
 
         commands.put(name, command);
+    }
+
+        // Register a set of base commands
+    public void registerBase() {
+        register(new Echo());
+        register(new Exit(this));
+        register(new Help(this));
+        register(new Version(this));
     }
 }
 

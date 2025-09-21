@@ -13,6 +13,11 @@ public class Version implements Command {
     public String getName() { return "version"; }
 
     @Override
+    public String getCategory() {
+        return "Base";
+    }
+
+    @Override
         public String getDescription() { return "Shows the JCMD version."; }
 
     @Override

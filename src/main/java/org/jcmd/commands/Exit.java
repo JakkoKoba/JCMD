@@ -13,6 +13,11 @@ public class Exit implements Command {
     public String getName() { return "exit"; }
 
     @Override
+    public String getCategory() {
+        return "Base";
+    }
+
+    @Override
     public String getDescription() { return "Exit JCMD."; }
 
     @Override
