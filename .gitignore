@@ -1,0 +1,14 @@
+target/
+test/
+
+.mvn/
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+*.log
+*.class
+*.jar
+*.war
+*.ear
