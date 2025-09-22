@@ -1,7 +1,7 @@
 target/
-
 .mvn/
 .idea/
+
 *.iml
 *.iws
 *.ipr
