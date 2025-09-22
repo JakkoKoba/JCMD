@@ -33,16 +33,21 @@ JCMD started. Type 'exit' to leave.
 > echo Hello World
 Hello World
 > version
-JCMD version 0.1.0
-> exit
+JCMD version 0.1.1
+> alias e exit
+Alias created: ex -> exit
+> ex
 Exiting CLI...
 ```
 
 ## Available Base Commands
 
+- `alias` - Create command aliases
+- `date` — Displays the current date
 - `echo` — Print messages to the console
 - `exit` — Stops the CLI
 - `help` — Lists available commands
+- `time` — Displays the current time
 - `version` — Shows JCMD version
 
 ---
@@ -62,5 +67,5 @@ mvn clean package
 
 3. Run the CLI:
 ```bash
-java -jar target/jcmd-cli-0.1.0.jar
+java -jar target/jcmd-cli-0.1.1.jar
 ```

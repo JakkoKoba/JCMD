@@ -5,6 +5,7 @@ import org.jcmd.core.*;
 public class Alias implements Command {
     private final JCMD engine;
     private final String ALIAS_CATEGORY = "Alias";
+    private final String DELETE_FLAG = "-del";
 
     public Alias(JCMD engine) {
         this.engine = engine;
@@ -25,14 +26,14 @@ public class Alias implements Command {
     public void execute(String[] args) {
         if (args.length < 1) {
             System.out.println("Usage: alias <newName> <existingCommand>");
-            System.out.println("       alias -d <aliasName>");
+            System.out.println("       alias " + DELETE_FLAG + " <aliasName>");
             return;
         }
 
         // Deletion mode
-        if ("-d".equals(args[0])) {
+        if (DELETE_FLAG.equals(args[0])) {
             if (args.length < 2) {
-                System.out.println("Usage: alias -d <aliasName>");
+                System.out.println("Usage: alias " + DELETE_FLAG + " <aliasName>");
                 return;
             }
             String aliasName = args[1];
