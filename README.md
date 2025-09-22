@@ -33,7 +33,7 @@ JCMD started. Type 'exit' to leave.
 > echo Hello World
 Hello World
 > version
-JCMD version 0.1.1
+JCMD version 0.1.2
 > alias e exit
 Alias created: ex -> exit
 > ex
