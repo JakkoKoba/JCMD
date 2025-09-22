@@ -14,6 +14,12 @@ It features a REPL (Read-Eval-Print Loop) interface, dynamic command registratio
 
 ---
 
+## Requirements (tested)
+- Java 24.0.2
+- Maven 3.9.11
+
+---
+
 ## Example Usage
 
 ```java
@@ -56,16 +62,16 @@ Exiting CLI...
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/USERNAME/jcmd-cli.git
+git clone https://github.com/JakkoKoba/jcmd.git
 ```
 
 2. Build with Maven:
 ```bash
-cd jcmd-cli
+cd jcmd
 mvn clean package
 ```
 
 3. Run the CLI:
 ```bash
-java -jar target/jcmd-cli-0.1.1.jar
+java -jar target/jcmd-0.1.2.jar
 ```

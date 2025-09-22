@@ -1,10 +1,11 @@
-import org.jcmd.core.*;
-import org.jcmd.commands.*;
+package org.jcmd;
+
+import org.jcmd.core.JCMD;
 
 public class Main {
-    public static JCMD engine = new JCMD();
 
     public static void main(String[] args) {
+                final JCMD engine = new JCMD();
         engine.registerBase();
         engine.run();
     }

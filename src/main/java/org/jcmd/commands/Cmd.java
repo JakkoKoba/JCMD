@@ -18,7 +18,7 @@ public class Cmd implements Command {
     }
 
     @Override
-    public String getDescription() { return ""; }
+    public String getDescription() { return "Register or unregister commands"; }
 
     @Override
     public void execute(String[] args) {
