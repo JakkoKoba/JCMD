@@ -21,7 +21,7 @@ public class Echo implements Command {
     @Override
     public void execute(String[] args) {
         if (args.length == 0) {
-            System.out.println(); // prints a blank line if no arguments
+            System.out.println();
         } else {
             System.out.println(String.join(" ", args));
         }

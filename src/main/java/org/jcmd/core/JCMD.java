@@ -4,15 +4,17 @@ import org.jcmd.commands.*;
 import java.util.*;
 
 public class JCMD {
-    private final Map<String, Command> commands = new HashMap<>();
+    private final Map<String, Command> commands = new TreeMap<>();
     private final Scanner scanner = new Scanner(System.in);
     private boolean running = true;
 
-    private static final String JCMD_VERSION = "0.1.0";
+    private static final String JCMD_VERSION = "0.1.1";
 
     public String getJcmdVersion() {
         return JCMD_VERSION;
     }
+
+    // Run JCMD
     public void run() {
         System.out.println("JCMD started. Type 'exit' to leave.");
         while (running) {
@@ -42,10 +44,17 @@ public class JCMD {
         return commands.values();
     }
 
+    // Fetch a command by name
+    public Command getCommand(String name) {
+        return commands.get(name);
+    }
+
+    // Stop JCMD
     public void stop() {
         running = false;
     }
 
+    // Register a command
     public void register(Command command) {
         if (command == null) {
             throw new IllegalArgumentException("Command cannot be null");
@@ -63,8 +72,18 @@ public class JCMD {
         commands.put(name, command);
     }
 
-        // Register a set of base commands
+    // Unregister a command
+    public void unregister(String name) {
+        if (commands.remove(name) != null) {
+            System.out.println("Command unregistered: " + name);
+        } else {
+            System.out.println("No such command registered: " + name);
+        }
+    }
+
+    // Register a set of base commands
     public void registerBase() {
+        register(new Alias(this));
         register(new Echo());
         register(new Exit(this));
         register(new Help(this));
