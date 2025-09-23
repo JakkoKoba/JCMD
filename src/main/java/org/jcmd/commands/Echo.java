@@ -3,19 +3,24 @@ package org.jcmd.commands;
 import org.jcmd.core.Command;
 
 public class Echo implements Command {
+
+    private final String NAME = "echo";
+    private final String DESCRIPTION = "Prints back the input text.";
+    private final String CATEGORY = "Base";
+
     @Override
     public String getName() {
-        return "echo";
+        return NAME;
     }
 
     @Override
     public String getDescription() {
-        return "Prints back the input text.";
+        return DESCRIPTION;
     }
 
     @Override
     public String getCategory() {
-        return "Base";
+        return CATEGORY;
     }
 
     @Override

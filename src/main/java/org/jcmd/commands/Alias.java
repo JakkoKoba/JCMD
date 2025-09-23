@@ -7,33 +7,37 @@ public class Alias implements Command {
     private final String ALIAS_CATEGORY = "Alias";
     private final String DELETE_FLAG = "-del";
 
+    private final String NAME = "alias";
+    private final String DESCRIPTION = "Creates an alias for an existing command.";
+    private final String CATEGORY = "Base";
+
     public Alias(JCMD engine) {
         this.engine = engine;
     }
 
     @Override
-    public String getName() { return "alias"; }
-
-    @Override
-    public String getCategory() { return "Base"; }
+    public String getName() { return NAME; }
 
     @Override
     public String getDescription() {
-        return "Creates an alias for an existing command.";
+        return DESCRIPTION;
     }
+
+    @Override
+    public String getCategory() { return CATEGORY; }
 
     @Override
     public void execute(String[] args) {
         if (args.length < 1) {
-            System.out.println("Usage: alias <newName> <existingCommand>");
-            System.out.println("       alias " + DELETE_FLAG + " <aliasName>");
+            System.out.println("Usage: " + NAME + " <newName> <existingCommand>");
+            System.out.println("       " + NAME + " " + DELETE_FLAG + " <aliasName>");
             return;
         }
 
         // Deletion mode
         if (DELETE_FLAG.equals(args[0])) {
             if (args.length < 2) {
-                System.out.println("Usage: alias " + DELETE_FLAG + " <aliasName>");
+                System.out.println("Usage: " + NAME + " " + DELETE_FLAG + " <aliasName>");
                 return;
             }
             String aliasName = args[1];
@@ -55,7 +59,7 @@ public class Alias implements Command {
 
         // Creation mode
         if (args.length < 2) {
-            System.out.println("Usage: alias <newName> <existingCommand>");
+            System.out.println("Usage: " + NAME + " <newName> <existingCommand>");
             return;
         }
 

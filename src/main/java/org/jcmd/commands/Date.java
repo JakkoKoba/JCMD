@@ -3,30 +3,32 @@ package org.jcmd.commands;
 import org.jcmd.core.Command;
 
 public class Date implements Command {
+
+    private final String NAME = "date";
+    private final String DESCRIPTION = "Displays the current system date.";
+    private final String CATEGORY = "Base";
+
     @Override
     public String getName() {
-        return "date";
+        return NAME;
     }
 
     @Override
     public String getDescription() {
-        return "Displays the current system date.";
+        return DESCRIPTION;
     }
 
     @Override
     public String getCategory() {
-        return "Base";
+        return CATEGORY;
     }
 
     @Override
     public void execute(String[] args) {
-        if (args.length > 1) {
-            System.out.println("Error: Too many arguments. Usage: date [format]");
-            return;
-        }
         String format = "dd-MM-yyyy";
-        if (args.length == 1) {
-            format = args[0];
+        if (args.length > 0) {
+            // Join all arguments into one string separated by spaces
+            format = String.join(" ", args);
         }
         try {
             String date = java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern(format));

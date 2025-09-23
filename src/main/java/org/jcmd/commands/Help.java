@@ -5,20 +5,24 @@ import org.jcmd.core.*;
 public class Help implements Command {
     private final JCMD engine;
 
+    private final String NAME = "help";
+    private final String DESCRIPTION = "Lists all available commands.";
+    private final String CATEGORY = "Base";
+
     public Help(JCMD engine) {
         this.engine = engine;
     }
 
     @Override
-    public String getName() { return "help"; }
+    public String getName() { return NAME; }
+
+    @Override
+    public String getDescription() { return DESCRIPTION; }
 
     @Override
     public String getCategory() {
-        return "Base";
+        return CATEGORY;
     }
-
-    @Override
-    public String getDescription() { return "Lists all available commands."; }
 
     @Override
     public void execute(String[] args) {

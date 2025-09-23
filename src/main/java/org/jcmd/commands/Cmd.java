@@ -4,34 +4,40 @@ import org.jcmd.core.*;
 
 public class Cmd implements Command {
     private final JCMD engine;
+    private final String REGISTER_FLAG = "-reg";
+    private final String UNREGISTER_FLAG = "-unreg";
+
+    private final String NAME = "command";
+    private final String DESCRIPTION = "Register or unregister commands.";
+    private final String CATEGORY = "Base";
 
     public Cmd(JCMD engine) {
         this.engine = engine;
     }
 
     @Override
-    public String getName() { return "command"; }
+    public String getName() { return NAME; }
+
+    @Override
+    public String getDescription() { return DESCRIPTION; }
 
     @Override
     public String getCategory() {
-        return "Base";
+        return CATEGORY;
     }
-
-    @Override
-    public String getDescription() { return "Register or unregister commands"; }
 
     @Override
     public void execute(String[] args) {
         if (args.length < 2) {
-            System.out.println("Usage: command -reg <className>");
-            System.out.println("       command -unreg <commandName>");
+            System.out.println("Usage: " + NAME + " " + REGISTER_FLAG + " <className>");
+            System.out.println("       " + NAME + " " + UNREGISTER_FLAG + " <commandName>");
             return;
         }
         String action = args[0];
         String target = args[1];
 
         switch (action) {
-            case "-reg":
+            case REGISTER_FLAG:
                 try {
                     // Convert string to Command instance
                     Command cmdInstance = engine.stringToCommand(target);
@@ -49,7 +55,7 @@ public class Cmd implements Command {
                 }
                 break;
 
-            case "-unreg":
+            case UNREGISTER_FLAG:
                 if (engine.getCommand(target) != null) {
                     engine.unregister(target);
                     System.out.println("Unregistered command: " + target);
@@ -60,7 +66,7 @@ public class Cmd implements Command {
 
             default:
                 System.out.println("Unknown action: " + action);
-                System.out.println("Use -reg or -unreg");
+                System.out.println("Use " + REGISTER_FLAG + " or " + UNREGISTER_FLAG + ".");
         }
     }
 }

@@ -3,30 +3,32 @@ package org.jcmd.commands;
 import org.jcmd.core.Command;
 
 public class Time implements Command {
+
+    private final String NAME = "time";
+    private final String DESCRIPTION = "Displays the current system time.";
+    private final String CATEGORY = "Base";
+
     @Override
     public String getName() {
-        return "time";
+        return NAME;
     }
 
     @Override
     public String getDescription() {
-        return "Displays the current system time.";
+        return DESCRIPTION;
     }
 
     @Override
     public String getCategory() {
-        return "Base";
+        return CATEGORY;
     }
 
     @Override
-        public void execute(String[] args) {
-        if (args.length > 1) {
-            System.err.println("Error: Too many arguments. Usage: time [format]");
-            return;
-        }
+    public void execute(String[] args) {
         String format = "HH:mm:ss";
-        if (args.length == 1) {
-            format = args[0];
+        if (args.length > 0) {
+            // Join all arguments into one string separated by spaces
+            format = String.join(" ", args);
         }
         try {
             String time = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern(format));
