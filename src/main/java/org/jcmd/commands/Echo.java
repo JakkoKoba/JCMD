@@ -1,6 +1,6 @@
 package org.jcmd.commands;
 
-import org.jcmd.core.Command;
+import org.jcmd.core.*;
 
 public class Echo implements Command {
 

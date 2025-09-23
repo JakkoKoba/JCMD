@@ -2,6 +2,7 @@ package org.jcmd.core;
 
 import org.jcmd.commands.*;
 import org.jcmd.commands.Date;
+import org.jcmd.core.BuildInfo;
 
 import java.util.*;
 
@@ -10,10 +11,17 @@ public class JCMD {
     private final Scanner scanner = new Scanner(System.in);
     private boolean running = true;
 
-    private static final String JCMD_VERSION = "0.1.2";
+    public static final String JCMD_VERSION = BuildInfo.JCMD_VERSION;
+    public static final String JAVA_VERSION = BuildInfo.JAVA_VERSION;
+    public final String MAVEN_VERSION;
 
-    public String getJcmdVersion() {
-        return JCMD_VERSION;
+    public JCMD() {
+        if (Objects.equals(BuildInfo.MAVEN_VERSION, "${maven.version}")) {
+            MAVEN_VERSION = "unknown";
+        }
+        else {
+            MAVEN_VERSION = BuildInfo.MAVEN_VERSION;
+        }
     }
 
     // Run JCMD
@@ -69,7 +77,7 @@ public class JCMD {
 
         // Check for duplicate command names
         if (commands.containsKey(name)) {
-                        System.out.println("Warning: Command already registered: " + name + ". Registration skipped.");
+            System.out.println("Warning: Command already registered: " + name + ". Registration skipped.");
             return;
         }
         commands.put(name, command);
@@ -152,13 +160,13 @@ public class JCMD {
         return instance;
     }
 
-
     // Register a set of base commands
     public void registerBase() {
         register(new Alias(this));
         register(new Cmd(this));
         register(new Date());
         register(new Echo());
+        register(new Env(this));
         register(new Exit(this));
         register(new Help(this));
         register(new Time());

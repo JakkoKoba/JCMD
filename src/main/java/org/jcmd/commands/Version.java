@@ -26,6 +26,6 @@ public class Version implements Command {
 
     @Override
     public void execute(String[] args) {
-        System.out.println("Current JCMD version: " + engine.getJcmdVersion());
+        System.out.println("Current JCMD version: " + engine.JCMD_VERSION);
     }
 }

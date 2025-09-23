@@ -8,7 +8,7 @@ import org.jcmd.core.JCMD;
  * Copy this file into `org.jcmd.commands` and rename the class.
  */
 
-public abstract class Template implements Command {
+public class Template implements Command {
     protected final JCMD engine;
 
     private final String NAME = "template";
