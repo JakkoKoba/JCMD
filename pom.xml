@@ -9,13 +9,18 @@
     <version>0.1.2</version>
     <packaging>jar</packaging>
 
-    <name>JCMD</name>
-    <description>Lightweight Java CLI framework with modular commands and REPL interface</description>
+    <name>${project.name}</name>
+    <description>${project.description}</description>
 
     <properties>
         <maven.compiler.source>24</maven.compiler.source>
         <maven.compiler.target>24</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <project.name>JCMD</project.name>
+        <project.description>Lightweight Java CLI framework with modular commands and REPL interface</project.description>
+
+        <project.mainClass>${project.groupId}.Main</project.mainClass>
     </properties>
 
     <build>
@@ -45,7 +50,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>org.jcmd.Main</mainClass>
+                                    <mainClass>${project.mainClass}</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>
@@ -55,6 +60,7 @@
         </plugins>
 
         <resources>
+            <!-- Enable resource filtering for properties files -->
             <resource>
                 <directory>src/main/resources</directory>
                 <filtering>true</filtering>

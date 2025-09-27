@@ -1,15 +1,16 @@
 package org.jcmd.commands;
 
-import org.jcmd.core.*;
+import org.jcmd.core.Command;
+import org.jcmd.core.JCMD;
 
-public class Version implements Command {
-    private final JCMD engine;
+public class Description implements Command {
+    protected final JCMD engine;
 
-    private final String NAME = "version";
-    private final String DESCRIPTION = "Shows the JCMD version.";
+    private final String NAME = "desc";
+    private final String DESCRIPTION = "Print the project description.";
     private final String CATEGORY = "Base";
 
-    public Version(JCMD engine) {
+    public Description(JCMD engine) {
         this.engine = engine;
     }
 
@@ -30,6 +31,6 @@ public class Version implements Command {
 
     @Override
     public void execute(String[] args) {
-        System.out.println("Current JCMD version: " + engine.JCMD_VERSION);
+        System.out.println("Project description: " + engine.PROJECT_DESCRIPTION);
     }
 }

@@ -48,9 +48,12 @@ Exiting CLI...
 
 ## Available Base Commands
 
-- `alias` - Create command aliases
+- `alias` — Create command aliases
+- `command` — Register/Unregister commands
 - `date` — Displays the current date
+- `desc` - Print the project description
 - `echo` — Print messages to the console
+- `env` — Print environment variables
 - `exit` — Stops the CLI
 - `help` — Lists available commands
 - `time` — Displays the current time
@@ -65,7 +68,7 @@ Exiting CLI...
 git clone https://github.com/JakkoKoba/jcmd.git
 ```
 
-2. Build with Maven:
+2. Build with maven:
 ```bash
 cd jcmd
 mvn clean package

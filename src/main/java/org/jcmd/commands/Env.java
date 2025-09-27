@@ -31,8 +31,6 @@ public class Env implements Command {
     @Override
     public void execute(String[] args) {
         if (args.length == 0) {
-            System.out.println("Environment Variables:");
-            System.out.println("JCMD Version: " + engine.JCMD_VERSION);
             System.out.println("Java Version: " + engine.JAVA_VERSION);
             System.out.println("Maven Version: " + engine.MAVEN_VERSION);
         }

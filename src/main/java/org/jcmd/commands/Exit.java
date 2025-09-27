@@ -14,10 +14,14 @@ public class Exit implements Command {
     }
 
     @Override
-    public String getName() { return NAME; }
+    public String getName() {
+        return NAME;
+    }
 
     @Override
-    public String getDescription() { return DESCRIPTION; }
+    public String getDescription() {
+        return DESCRIPTION;
+    }
 
     @Override
     public String getCategory() {

@@ -2,8 +2,6 @@ package org.jcmd.core;
 
 import org.jcmd.commands.*;
 import org.jcmd.commands.Date;
-import org.jcmd.core.BuildInfo;
-
 import java.util.*;
 
 public class JCMD {
@@ -13,20 +11,14 @@ public class JCMD {
 
     public static final String JCMD_VERSION = BuildInfo.JCMD_VERSION;
     public static final String JAVA_VERSION = BuildInfo.JAVA_VERSION;
-    public final String MAVEN_VERSION;
+    public final String MAVEN_VERSION = BuildInfo.MAVEN_VERSION;
 
-    public JCMD() {
-        if (Objects.equals(BuildInfo.MAVEN_VERSION, "${maven.version}")) {
-            MAVEN_VERSION = "unknown";
-        }
-        else {
-            MAVEN_VERSION = BuildInfo.MAVEN_VERSION;
-        }
-    }
+    public static final String PROJECT_NAME = BuildInfo.PROJECT_NAME;
+    public static final String PROJECT_DESCRIPTION = BuildInfo.PROJECT_DESCRIPTION;
 
     // Run JCMD
     public void run() {
-        System.out.println("JCMD started. Type 'exit' to leave.");
+        System.out.println(PROJECT_NAME + " started. Type 'exit' to leave.");
         while (running) {
             System.out.print("> ");
             String input = scanner.nextLine().trim();
@@ -116,6 +108,7 @@ public class JCMD {
         return aliasesToRemove;
     }
 
+    // Convert a string to a Command instance using reflection
     public Command stringToCommand(String className)
             throws ReflectiveOperationException {
 
@@ -156,15 +149,15 @@ public class JCMD {
             // Fall back to no-arg constructor
             instance = (Command) clazz.getConstructor().newInstance();
         }
-
         return instance;
     }
 
     // Register a set of base commands
-    public void registerBase() {
+    public void registerBaseCommands() {
         register(new Alias(this));
         register(new Cmd(this));
         register(new Date());
+        register(new Description(this));
         register(new Echo());
         register(new Env(this));
         register(new Exit(this));

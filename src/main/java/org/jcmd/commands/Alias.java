@@ -16,7 +16,9 @@ public class Alias implements Command {
     }
 
     @Override
-    public String getName() { return NAME; }
+    public String getName() {
+        return NAME;
+    }
 
     @Override
     public String getDescription() {
@@ -24,7 +26,9 @@ public class Alias implements Command {
     }
 
     @Override
-    public String getCategory() { return CATEGORY; }
+    public String getCategory() {
+        return CATEGORY;
+    }
 
     @Override
     public void execute(String[] args) {
