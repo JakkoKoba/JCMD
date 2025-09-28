@@ -18,17 +18,14 @@ public class Description implements Command {
     public String getName() {
         return NAME;
     }
-
     @Override
     public String getDescription() {
         return DESCRIPTION;
     }
-
     @Override
     public String getCategory() {
         return CATEGORY;
     }
-
     @Override
     public void execute(String[] args) {
         System.out.println("Project description: " + engine.PROJECT_DESCRIPTION);

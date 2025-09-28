@@ -1,6 +1,6 @@
 package org.jcmd.commands;
 
-import org.jcmd.core.*;
+import org.jcmd.core.Command;
 
 public class Echo implements Command {
 
@@ -12,17 +12,14 @@ public class Echo implements Command {
     public String getName() {
         return NAME;
     }
-
     @Override
     public String getDescription() {
         return DESCRIPTION;
     }
-
     @Override
     public String getCategory() {
         return CATEGORY;
     }
-
     @Override
     public void execute(String[] args) {
         if (args.length == 0) {

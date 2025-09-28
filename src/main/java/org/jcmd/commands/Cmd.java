@@ -1,6 +1,9 @@
 package org.jcmd.commands;
 
-import org.jcmd.core.*;
+import org.jcmd.core.Command;
+import org.jcmd.core.JCMD;
+
+import java.util.Objects;
 
 public class Cmd implements Command {
     private final JCMD engine;
@@ -9,7 +12,7 @@ public class Cmd implements Command {
 
     private final String NAME = "command";
     private final String DESCRIPTION = "Register or unregister commands.";
-    private final String CATEGORY = "Base";
+    private final String CATEGORY = "Core";
 
     public Cmd(JCMD engine) {
         this.engine = engine;
@@ -37,9 +40,9 @@ public class Cmd implements Command {
             System.out.println("       " + NAME + " " + UNREGISTER_FLAG + " <commandName>");
             return;
         }
+
         String action = args[0];
         String target = args[1];
-
         switch (action) {
             case REGISTER_FLAG:
                 try {
@@ -60,17 +63,24 @@ public class Cmd implements Command {
                 break;
 
             case UNREGISTER_FLAG:
-                if (engine.getCommand(target) != null) {
-                    engine.unregister(target);
-                    System.out.println("Unregistered command: " + target);
-                } else {
+                Command cmd = engine.getCommand(target);
+                if (cmd == null) {
                     System.out.println("No such command registered: " + target);
+                    break;
                 }
+                if (Objects.equals(engine.getCommand(target).getCategory(), "Core")) {
+                    System.out.println("Cannot unregister core commands.");
+                    return;
+                }
+                engine.unregister(target);
+                System.out.println("Unregistered command: " + target);
                 break;
 
             default:
                 System.out.println("Unknown action: " + action);
                 System.out.println("Use " + REGISTER_FLAG + " or " + UNREGISTER_FLAG + ".");
+
+                break;
         }
     }
 }

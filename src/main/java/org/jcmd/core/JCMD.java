@@ -152,18 +152,21 @@ public class JCMD {
         return instance;
     }
 
-    // Register a set of base commands
-    public void registerBaseCommands() {
+    public void registerCoreCommands() {
         register(new Alias(this));
         register(new Cmd(this));
-        register(new Date());
-        register(new Description(this));
-        register(new Echo());
         register(new Env(this));
         register(new Exit(this));
         register(new Help(this));
-        register(new Time());
         register(new Version(this));
+
+    }
+
+    public void registerBaseCommands() {
+        register(new Date());
+        register(new Description(this));
+        register(new Echo());
+        register(new Time());
     }
 }
 

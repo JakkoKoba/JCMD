@@ -1,15 +1,17 @@
 package org.jcmd.commands;
 
-import org.jcmd.core.*;
+import org.jcmd.core.Command;
+import org.jcmd.core.JCMD;
+
+import java.util.Objects;
 
 public class Alias implements Command {
     private final JCMD engine;
     private final String ALIAS_CATEGORY = "Alias";
-    private final String DELETE_FLAG = "-del";
 
     private final String NAME = "alias";
     private final String DESCRIPTION = "Creates an alias for an existing command.";
-    private final String CATEGORY = "Base";
+    private final String CATEGORY = "Core";
 
     public Alias(JCMD engine) {
         this.engine = engine;
@@ -19,49 +21,16 @@ public class Alias implements Command {
     public String getName() {
         return NAME;
     }
-
     @Override
     public String getDescription() {
         return DESCRIPTION;
     }
-
     @Override
     public String getCategory() {
         return CATEGORY;
     }
-
     @Override
     public void execute(String[] args) {
-        if (args.length < 1) {
-            System.out.println("Usage: " + NAME + " <newName> <existingCommand>");
-            System.out.println("       " + NAME + " " + DELETE_FLAG + " <aliasName>");
-            return;
-        }
-
-        // Deletion mode
-        if (DELETE_FLAG.equals(args[0])) {
-            if (args.length < 2) {
-                System.out.println("Usage: " + NAME + " " + DELETE_FLAG + " <aliasName>");
-                return;
-            }
-            String aliasName = args[1];
-            Command alias = engine.getCommand(aliasName);
-
-            if (alias == null) {
-                System.out.println("No such alias: " + aliasName);
-                return;
-            }
-            if (!ALIAS_CATEGORY.equals(alias.getCategory())) {
-                System.out.println(aliasName + " is not an alias and cannot be deleted.");
-                return;
-            }
-
-            engine.unregister(aliasName);
-            System.out.println("Alias removed: " + aliasName);
-            return;
-        }
-
-        // Creation mode
         if (args.length < 2) {
             System.out.println("Usage: " + NAME + " <newName> <existingCommand>");
             return;
@@ -71,17 +40,28 @@ public class Alias implements Command {
         String targetName = args[1];
         Command target = engine.getCommand(targetName);
 
+        // Check if target command exists
         if (target == null) {
             System.out.println("No such command: " + targetName);
+            return;
+        }
+
+        // Prevent aliasing an alias
+        if (Objects.equals(target.getCategory(), "Alias")) {
+            System.out.println("Cannot create an alias to another alias.");
             return;
         }
 
         // Create a lightweight wrapper command
         Command alias = new Command() {
             @Override
-            public String getName() { return newName; }
+            public String getName() {
+                return newName;
+            }
             @Override
-            public String getCategory() { return ALIAS_CATEGORY; }
+            public String getCategory() {
+                return ALIAS_CATEGORY;
+            }
             @Override
             public String getDescription() {
                 return "Alias for '" + targetName + "'";

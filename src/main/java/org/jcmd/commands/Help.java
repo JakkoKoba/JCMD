@@ -1,13 +1,14 @@
 package org.jcmd.commands;
 
-import org.jcmd.core.*;
+import org.jcmd.core.Command;
+import org.jcmd.core.JCMD;
 
 public class Help implements Command {
     private final JCMD engine;
 
     private final String NAME = "help";
     private final String DESCRIPTION = "Lists all available commands.";
-    private final String CATEGORY = "Base";
+    private final String CATEGORY = "Core";
 
     public Help(JCMD engine) {
         this.engine = engine;
@@ -17,17 +18,14 @@ public class Help implements Command {
     public String getName() {
         return NAME;
     }
-
     @Override
     public String getDescription() {
         return DESCRIPTION;
     }
-
     @Override
     public String getCategory() {
         return CATEGORY;
     }
-
     @Override
     public void execute(String[] args) {
         if (args.length == 0) {

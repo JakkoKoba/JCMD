@@ -1,6 +1,6 @@
 package org.jcmd.commands;
 
-import org.jcmd.core.*;
+import org.jcmd.core.Command;
 
 public class Time implements Command {
 
@@ -12,17 +12,14 @@ public class Time implements Command {
     public String getName() {
         return NAME;
     }
-
     @Override
     public String getDescription() {
         return DESCRIPTION;
     }
-
     @Override
     public String getCategory() {
         return CATEGORY;
     }
-
     @Override
     public void execute(String[] args) {
         String format = "HH:mm:ss";
@@ -34,7 +31,7 @@ public class Time implements Command {
             String time = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern(format));
             System.out.println(time);
         } catch (IllegalArgumentException e) {
-            System.err.println("Invalid time format pattern: \"" + format + "\"");
+            System.out.println("Invalid time format pattern: " + format);
         }
     }
 }

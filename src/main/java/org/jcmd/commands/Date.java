@@ -1,6 +1,7 @@
 package org.jcmd.commands;
 
-import org.jcmd.core.*;
+import org.jcmd.core.Command;
+import org.jcmd.core.JCMD;
 
 public class Date implements Command {
 
@@ -12,17 +13,14 @@ public class Date implements Command {
     public String getName() {
         return NAME;
     }
-
     @Override
     public String getDescription() {
         return DESCRIPTION;
     }
-
     @Override
     public String getCategory() {
         return CATEGORY;
     }
-
     @Override
     public void execute(String[] args) {
         String format = "dd-MM-yyyy";
@@ -34,7 +32,7 @@ public class Date implements Command {
             String date = java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern(format));
             System.out.println(date);
         } catch (IllegalArgumentException e) {
-            System.err.println("Invalid date format pattern: " + format);
+            System.out.println("Invalid date format pattern: " + format);
         }
     }
 }
