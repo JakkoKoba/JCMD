@@ -1,7 +1,7 @@
 package org.jcmd.commands;
 
 import org.jcmd.core.Command;
-import org.jcmd.core.JCMD;
+import org.jcmd.core.Variables;
 
 public class Date implements Command {
 
@@ -23,7 +23,7 @@ public class Date implements Command {
     }
     @Override
     public void execute(String[] args) {
-        String format = "dd-MM-yyyy";
+        String format = Variables.DATE_FORMAT;
         if (args.length > 0) {
             // Join all arguments into one string separated by spaces
             format = String.join(" ", args);

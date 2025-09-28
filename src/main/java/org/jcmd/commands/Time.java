@@ -1,6 +1,7 @@
 package org.jcmd.commands;
 
 import org.jcmd.core.Command;
+import org.jcmd.core.Variables;
 
 public class Time implements Command {
 
@@ -22,7 +23,7 @@ public class Time implements Command {
     }
     @Override
     public void execute(String[] args) {
-        String format = "HH:mm:ss";
+        String format = Variables.TIME_FORMAT;
         if (args.length > 0) {
             // Join all arguments into one string separated by spaces
             format = String.join(" ", args);

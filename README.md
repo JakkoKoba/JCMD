@@ -26,8 +26,8 @@ It features a REPL (Read-Eval-Print Loop) interface, dynamic command registratio
 JCMD app = new JCMD();
 
 // Register commands
+app.registerCoreCommands();
 app.register(new Echo());
-app.register(new Exit(app));
 
 // Start CLI
 app.run();
@@ -36,28 +36,33 @@ app.run();
 ## Sample console session:
 ```
 JCMD started. Type 'exit' to leave.
-> echo Hello World
-Hello World
+> echo Hello ${date yyyy}!
+Hello World 2025!
+> command -reg org.jcmd.commands.version
+Command registered: version
 > version
-JCMD version 0.1.2
-> alias e exit
+JCMD version 0.1.3
+> alias ex exit
 Alias created: ex -> exit
 > ex
 Exiting CLI...
 ```
 
-## Available Base Commands
+## Available Core/Base Commands
 
+#### Core:
 - `alias` — Create command aliases
 - `command` — Register/Unregister commands
-- `date` — Displays the current date
-- `desc` - Print the project description
-- `echo` — Print messages to the console
 - `env` — Print environment variables
 - `exit` — Stops the CLI
 - `help` — Lists available commands
-- `time` — Displays the current time
 - `version` — Shows JCMD version
+#### Base:
+- `date` — Displays the current date
+- `desc` - Print the project description
+- `echo` — Print messages to the console
+- `name` — Displays the project name
+- `time` — Displays the current time
 
 ---
 
@@ -76,5 +81,5 @@ mvn clean package
 
 3. Run the CLI:
 ```bash
-java -jar target/jcmd-0.1.2.jar
+java -jar target/jcmd-0.1.3.jar
 ```

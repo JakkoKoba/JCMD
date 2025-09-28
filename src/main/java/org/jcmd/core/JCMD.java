@@ -2,9 +2,17 @@ package org.jcmd.core;
 
 import org.jcmd.commands.*;
 import org.jcmd.commands.Date;
-import java.util.*;
+
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+import java.util.TreeMap;
 
 public class JCMD {
+
     private final Map<String, Command> commands = new TreeMap<>();
     private final Scanner scanner = new Scanner(System.in);
     private boolean running = true;
@@ -154,7 +162,7 @@ public class JCMD {
 
     public void registerCoreCommands() {
         register(new Alias(this));
-        register(new Cmd(this));
+        register(new org.jcmd.commands.Command(this));
         register(new Env(this));
         register(new Exit(this));
         register(new Help(this));
@@ -166,6 +174,7 @@ public class JCMD {
         register(new Date());
         register(new Description(this));
         register(new Echo());
+        register(new Name(this));
         register(new Time());
     }
 }
