@@ -38,10 +38,10 @@ app.run();
 JCMD started. Type 'exit' to leave.
 > echo Hello ${date yyyy}!
 Hello World 2025!
-> commandTemplate -reg org.jcmd.commands.version
-Command registered: version
-> version
-JCMD version 0.1.3
+> command -reg org.jcmd.commands.base.date
+Command registered: date
+> date YYYY
+2025
 > alias ex exit
 Alias created: ex -> exit
 > ex
@@ -50,14 +50,14 @@ Exiting CLI...
 
 ## Available Core/Base Commands
 
-#### Core:
+#### Core Package:
 - `alias` — Create commandTemplate aliases
 - `commandTemplate` — Register/Unregister commands
 - `env` — Print environment variables
 - `exit` — Stops the CLI
 - `help` — Lists available commands
 - `version` — Shows JCMD version
-#### Base:
+#### Base Package:
 - `date` — Displays the current date
 - `desc` - Print the project description
 - `echo` — Print messages to the console
@@ -72,14 +72,24 @@ Exiting CLI...
 ```bash
 git clone https://github.com/JakkoKoba/jcmd.git
 ```
-
-2. Build with maven:
+2. Navigate to the project directory:
 ```bash
 cd jcmd
-mvn clean package
 ```
 
-3. Run the CLI:
+---
+
+### Building with maven:
+Full package:
+```bash
+mvn clean package
+```
+Core package only:
+```bash
+mvn clean package -Pcore
+```
+
+### Run the CLI:
 ```bash
 java -jar target/jcmd-0.1.3.jar
 ```
