@@ -7,8 +7,8 @@ public class Main {
     final static JCMD engine = new JCMD();
 
     public static void init() {
-        engine.registerCoreCommands();
-        engine.registerBaseCommands();
+        engine.registerCorePackage();
+        engine.registerBasePackage();
     }
 
     public static void main(String[] args) {

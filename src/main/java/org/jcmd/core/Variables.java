@@ -3,6 +3,7 @@ package org.jcmd.core;
 import java.time.LocalTime;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.UnsupportedTemporalTypeException;
 
 public class Variables {
 
@@ -23,35 +24,27 @@ public class Variables {
     public final static String MAVEN_VERSION = BuildInfo.MAVEN_VERSION;
 
     public String time(String[] args) {
-        String time = "";
-        String timeFormat = TIME_FORMAT;
-        
-        if (args.length > 0) {
-            // Join all arguments into one string separated by spaces
-            timeFormat = String.join(" ", args);
-        }
+        String timeFormat = (args.length > 0) ? String.join(" ", args) : "HH:mm:ss"; // default
         try {
-            time = LocalTime.now().format(DateTimeFormatter.ofPattern(timeFormat));
+            return LocalTime.now().format(DateTimeFormatter.ofPattern(timeFormat));
+        } catch (UnsupportedTemporalTypeException e) {
+            System.out.print("Invalid time format pattern for LocalTime: " + timeFormat);
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid time format pattern: " + timeFormat);
+            System.out.print("Invalid time format syntax: " + timeFormat);
         }
-        return time;
+        return "";
     }
 
     public String date(String[] args) {
-        String date = "";
-        String dateFormat = DATE_FORMAT;
-
-        if (args.length > 0) {
-            // Join all arguments into one string separated by spaces
-            dateFormat = String.join(" ", args);
-        }
+        String dateFormat = (args.length > 0) ? String.join(" ", args) : "yyyy-MM-dd"; // default
         try {
-            date = LocalDate.now().format(DateTimeFormatter.ofPattern(DATE_FORMAT));
+            return LocalDate.now().format(DateTimeFormatter.ofPattern(dateFormat));
+        } catch (UnsupportedTemporalTypeException e) {
+            System.out.print("Invalid date format pattern for LocalDate: " + dateFormat);
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid time format pattern: " + dateFormat);
+            System.out.print("Invalid date format syntax: " + dateFormat);
         }
-        return date;
+        return "";
     }
 }
 

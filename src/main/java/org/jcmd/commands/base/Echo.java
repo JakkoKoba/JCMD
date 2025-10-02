@@ -1,13 +1,12 @@
-package org.jcmd.commands;
+package org.jcmd.commands.base;
 
-import org.jcmd.core.JCMD;
-import org.jcmd.core.Command;
+import org.jcmd.core.CommandTemplate;
 import org.jcmd.core.Variables;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-public class Echo implements Command {
+public class Echo implements CommandTemplate {
 
     private final Variables var = new Variables();
 

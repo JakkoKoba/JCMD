@@ -1,11 +1,11 @@
-package org.jcmd.commands;
+package org.jcmd.commands.core;
 
 import org.jcmd.core.JCMD;
 import org.jcmd.core.Variables;
 
 import java.util.Objects;
 
-public class Command implements org.jcmd.core.Command {
+public class Command implements org.jcmd.core.CommandTemplate {
     private final JCMD engine;
 
     private final String NAME = "command";
@@ -48,7 +48,7 @@ public class Command implements org.jcmd.core.Command {
         if (action.equals(REGISTER_FLAG)) {
             try {
                 // Convert string to Command instance
-                org.jcmd.core.Command cmdInstance = engine.stringToCommand(target);
+                org.jcmd.core.CommandTemplate cmdInstance = engine.stringToCommand(target);
 
                 // Register the command
                 engine.register(cmdInstance);
@@ -66,7 +66,7 @@ public class Command implements org.jcmd.core.Command {
 
         // Unregister flag
         if (action.equals(UNREGISTER_FLAG)) {
-            org.jcmd.core.Command cmd = engine.getCommand(target);
+            org.jcmd.core.CommandTemplate cmd = engine.getCommand(target);
             if (cmd == null) {
                 System.out.println("No such command registered: " + target);
                 return;

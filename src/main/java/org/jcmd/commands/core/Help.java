@@ -1,9 +1,9 @@
-package org.jcmd.commands;
+package org.jcmd.commands.core;
 
-import org.jcmd.core.Command;
+import org.jcmd.core.CommandTemplate;
 import org.jcmd.core.JCMD;
 
-public class Help implements Command {
+public class Help implements CommandTemplate {
     private final JCMD engine;
 
     private final String NAME = "help";
@@ -31,7 +31,7 @@ public class Help implements Command {
         if (args.length == 0) {
             // No category specified, list all commands
             System.out.println("Available commands:");
-            for (Command c : engine.getCommands()) {
+            for (CommandTemplate c : engine.getCommands()) {
                 System.out.printf("  %-10s : (%s) %s%n", c.getName(), c.getCategory(), c.getDescription());
             }
         } else {
@@ -39,7 +39,7 @@ public class Help implements Command {
             String filterCategory = args[0];
             System.out.println("Commands in category '" + filterCategory + "':");
             boolean found = false;
-            for (Command c : engine.getCommands()) {
+            for (CommandTemplate c : engine.getCommands()) {
                 if (c.getCategory() != null && c.getCategory().equalsIgnoreCase(filterCategory)) {
                     System.out.printf("  %-10s : %s%n", c.getName(), c.getDescription());
                     found = true;

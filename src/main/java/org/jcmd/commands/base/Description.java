@@ -1,16 +1,16 @@
-package org.jcmd.commands;
+package org.jcmd.commands.base;
 
-import org.jcmd.core.Command;
+import org.jcmd.core.CommandTemplate;
 import org.jcmd.core.JCMD;
 
-public class Name implements Command {
+public class Description implements CommandTemplate {
     protected final JCMD engine;
 
-    private final String NAME = "name";
-    private final String DESCRIPTION = "Print the project name.";
+    private final String NAME = "desc";
+    private final String DESCRIPTION = "Print the project description.";
     private final String CATEGORY = "Base";
 
-    public Name(JCMD engine) {
+    public Description(JCMD engine) {
         this.engine = engine;
     }
 
@@ -28,6 +28,6 @@ public class Name implements Command {
     }
     @Override
     public void execute(String[] args) {
-        System.out.println("Project name: " + engine.PROJECT_NAME);
+        System.out.println("Project description: " + engine.PROJECT_DESCRIPTION);
     }
 }

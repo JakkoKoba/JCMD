@@ -1,6 +1,6 @@
 package org.jcmd.commands.templates;
 
-import org.jcmd.core.Command;
+import org.jcmd.core.CommandTemplate;
 import org.jcmd.core.JCMD;
 
 /**
@@ -8,7 +8,7 @@ import org.jcmd.core.JCMD;
  * Copy this file into `org.jcmd.commands` and rename the class.
  */
 
-public class Template implements Command {
+public class Template implements CommandTemplate {
     protected final JCMD engine;
 
     private final String NAME = "template";

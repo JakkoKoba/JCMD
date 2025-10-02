@@ -1,13 +1,13 @@
-package org.jcmd.commands;
+package org.jcmd.commands.core;
 
-import org.jcmd.core.Command;
+import org.jcmd.core.CommandTemplate;
 import org.jcmd.core.JCMD;
 import org.jcmd.core.Variables;
 
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
-public class Env implements Command {
+public class Env implements CommandTemplate {
     protected final JCMD engine;
 
     private final String NAME = "env";

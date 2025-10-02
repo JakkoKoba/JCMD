@@ -1,9 +1,9 @@
-package org.jcmd.commands;
+package org.jcmd.commands.core;
 
-import org.jcmd.core.Command;
+import org.jcmd.core.CommandTemplate;
 import org.jcmd.core.JCMD;
 
-public class Version implements Command {
+public class Version implements CommandTemplate {
     private final JCMD engine;
 
     private final String NAME = "version";

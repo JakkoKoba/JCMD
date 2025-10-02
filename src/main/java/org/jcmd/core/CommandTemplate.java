@@ -1,6 +1,6 @@
 package org.jcmd.core;
 
-public interface Command {
+public interface CommandTemplate {
     String getName();
     String getDescription();
     String getCategory();
