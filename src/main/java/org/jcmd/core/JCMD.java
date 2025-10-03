@@ -2,6 +2,7 @@ package org.jcmd.core;
 
 import org.jcmd.commands.core.*;
 import org.jcmd.commands.base.*;
+import org.jcmd.commands.templates.CommandWrapper;
 
 import java.util.Arrays;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.TreeMap;
 
 public class JCMD {
 
-    private final Map<String, CommandTemplate> commands = new TreeMap<>();
+    private final Map<String, Command> commands = new TreeMap<>();
     private final Scanner scanner = new Scanner(System.in);
     private boolean running = true;
 
@@ -24,6 +25,8 @@ public class JCMD {
     public static final String PROJECT_NAME = BuildInfo.PROJECT_NAME;
     public static final String PROJECT_DESCRIPTION = BuildInfo.PROJECT_DESCRIPTION;
 
+    private final PackageReg pack = new PackageReg();
+
     // Run JCMD
     public void run() {
         System.out.println(PROJECT_NAME + " started. Type 'exit' to leave.");
@@ -32,31 +35,21 @@ public class JCMD {
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) continue; // Ignore empty input
 
-            String[] parts = input.split("\\s+"); // Split input into commandTemplate and arguments
+            String[] parts = input.split("\\s+"); // Split input into command and arguments
             String name = parts[0]; // Command name
             String[] args = Arrays.copyOfRange(parts, 1, parts.length); // Command arguments
 
-            CommandTemplate commandTemplate = commands.get(name);
-            if (commandTemplate != null) {
+            Command command = commands.get(name);
+            if (command != null) {
                 try {
-                    commandTemplate.execute(args);
+                    command.execute(args);
                 } catch (Exception e) {
                     System.out.println("Error: " + e.getMessage());
                 }
             } else {
-                System.out.println("Unknown commandTemplate: " + name);
+                System.out.println("Unknown command: " + name);
             }
         }
-    }
-
-    // Get a collection of all registered commands
-    public Collection<CommandTemplate> getCommands() {
-        return commands.values();
-    }
-
-    // Fetch a command by name
-    public CommandTemplate getCommand(String name) {
-        return commands.get(name);
     }
 
     // Stop JCMD
@@ -64,28 +57,40 @@ public class JCMD {
         running = false;
     }
 
-    // Register a commandTemplate
-    public void register(CommandTemplate commandTemplate) {
-        if (commandTemplate == null) {
-            throw new IllegalArgumentException("Command cannot be null");
-        }
+    // Get a collection of all registered commands
+    public Collection<Command> getCommands() {
+        return commands.values();
+    }
 
-        String name = commandTemplate.getName();
-        if (name == null || name.isEmpty()) {
+    // Fetch a command by name
+    public Command getCommand(String name) {
+        return commands.get(name);
+    }
+
+    // Register a command
+    public void register(Command command, String packageKey) {
+        if (command == null) throw new IllegalArgumentException("Command cannot be null");
+
+        // Validate package key
+        String name = command.getName();
+        if (name == null || name.isEmpty())
             throw new IllegalArgumentException("Command name cannot be null or empty");
+
+        // If name already exists, automatically namespace it
+        if (commands.containsKey(name)) {
+            String namespaced = packageKey + "." + name;
+            System.out.println("Warning: Command '" + name + "' conflicts. Registered as '" + namespaced + "'.");
+            name = namespaced;
+            // Wrap the command to override getName
+            command = new CommandWrapper(command, name);
         }
 
-        // Check for duplicate commandTemplate names
-        if (commands.containsKey(name)) {
-            System.out.println("Warning: Command already registered: " + name + ". Registration skipped.");
-            return;
-        }
-        commands.put(name, commandTemplate);
+        commands.put(name, command);
     }
 
     // Unregister a command
     public void unregister(String name) {
-        CommandTemplate removed = commands.remove(name);
+        Command removed = commands.remove(name);
 
         if (removed == null) {
             System.out.println("No such command registered: " + name);
@@ -104,8 +109,8 @@ public class JCMD {
     // Find aliases that reference the given command name
     private List<String> getStrings(String name) {
         List<String> aliasesToRemove = new ArrayList<>();
-        for (Map.Entry<String, CommandTemplate> entry : commands.entrySet()) { // Iterate over a copy to avoid ConcurrentModificationException
-            CommandTemplate cmd = entry.getValue();
+        for (Map.Entry<String, Command> entry : commands.entrySet()) { // Iterate over a copy to avoid ConcurrentModificationException
+            Command cmd = entry.getValue();
             if ("Alias".equals(cmd.getCategory())) {
                 String desc = cmd.getDescription();
                 if (desc != null && desc.contains("'" + name + "'")) {
@@ -116,8 +121,8 @@ public class JCMD {
         return aliasesToRemove;
     }
 
-    // Convert a string to a Command instance using reflection
-    public CommandTemplate stringToCommand(String className)
+    // Convert a string to a Cmd instance using reflection
+    public Command stringToCommand(String className)
             throws ReflectiveOperationException {
 
         // Ensure fully-qualified name
@@ -143,39 +148,43 @@ public class JCMD {
         // Load the class
         Class<?> clazz = Class.forName(className);
 
-        // Verify it implements Command
-        if (!CommandTemplate.class.isAssignableFrom(clazz)) {
+        // Verify it implements Cmd
+        if (!Command.class.isAssignableFrom(clazz)) {
             throw new IllegalArgumentException(className + " does not implement Command");
         }
 
-        CommandTemplate instance;
+        Command instance;
 
         try {
             // Try constructor with JCMD parameter
-            instance = (CommandTemplate) clazz.getConstructor(JCMD.class).newInstance(this);
+            instance = (Command) clazz.getConstructor(JCMD.class).newInstance(this);
         } catch (NoSuchMethodException e) {
             // Fall back to no-arg constructor
-            instance = (CommandTemplate) clazz.getConstructor().newInstance();
+            instance = (Command) clazz.getConstructor().newInstance();
         }
         return instance;
     }
 
-    public void registerCorePackage() {
-        register(new Alias(this));
-        register(new org.jcmd.commands.core.Command(this));
-        register(new Env(this));
-        register(new Exit(this));
-        register(new Help(this));
-        register(new Version(this));
+    // Register packages
+    public void registerPackage(String key) {
+        String[] classNames = pack.registry.get(key.toLowerCase());
+        String packageName = pack.names.get(key.toLowerCase());
 
-    }
+        // Validate package key
+        if (classNames == null || packageName == null) {
+            System.out.println("Unknown package key: " + key);
+            return;
+        }
 
-    public void registerBasePackage() {
-        register(new Date());
-        register(new Description(this));
-        register(new Echo());
-        register(new Name(this));
-        register(new Time());
+        // Register each command in the package
+        for (String className : classNames) {
+            try {
+                Command cmd = stringToCommand(packageName + "." + className);
+                register(cmd, key.toLowerCase()); // Pass package key for namespacing
+            } catch (Exception e) {
+                System.out.println("Failed to register: " + className + " -> " + e.getMessage());
+            }
+        }
     }
 }
 

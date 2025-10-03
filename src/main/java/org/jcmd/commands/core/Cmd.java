@@ -1,18 +1,19 @@
 package org.jcmd.commands.core;
 
+import org.jcmd.core.Command;
 import org.jcmd.core.JCMD;
 import org.jcmd.core.Variables;
 
 import java.util.Objects;
 
-public class Command implements org.jcmd.core.CommandTemplate {
+public class Cmd implements Command {
     private final JCMD engine;
 
     private final String NAME = "command";
     private final String DESCRIPTION = "Register or unregister commands.";
     private final String CATEGORY = "Core";
 
-    public Command(JCMD engine) {
+    public Cmd(JCMD engine) {
         this.engine = engine;
     }
 
@@ -47,11 +48,15 @@ public class Command implements org.jcmd.core.CommandTemplate {
         // Register flag
         if (action.equals(REGISTER_FLAG)) {
             try {
-                // Convert string to Command instance
-                org.jcmd.core.CommandTemplate cmdInstance = engine.stringToCommand(target);
+                // Convert string to Cmd instance
+                Command cmdInstance = engine.stringToCommand(target);
+
+                // Determine package key
+                String packageKey = cmdInstance.getClass().getPackage().getName();
+                packageKey = packageKey.substring(packageKey.lastIndexOf('.') + 1).toLowerCase();
 
                 // Register the command
-                engine.register(cmdInstance);
+                engine.register(cmdInstance, packageKey);
                 System.out.println("Registered command: " + cmdInstance.getName());
 
             } catch (ClassNotFoundException e) {
@@ -66,7 +71,7 @@ public class Command implements org.jcmd.core.CommandTemplate {
 
         // Unregister flag
         if (action.equals(UNREGISTER_FLAG)) {
-            org.jcmd.core.CommandTemplate cmd = engine.getCommand(target);
+            Command cmd = engine.getCommand(target);
             if (cmd == null) {
                 System.out.println("No such command registered: " + target);
                 return;

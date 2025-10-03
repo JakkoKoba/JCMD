@@ -1,11 +1,11 @@
 package org.jcmd.commands.core;
 
-import org.jcmd.core.CommandTemplate;
+import org.jcmd.core.Command;
 import org.jcmd.core.JCMD;
 
 import java.util.Objects;
 
-public class Alias implements CommandTemplate {
+public class Alias implements Command {
     private final JCMD engine;
     private final String ALIAS_CATEGORY = "Alias";
 
@@ -38,7 +38,7 @@ public class Alias implements CommandTemplate {
 
         String newName = args[0];
         String targetName = args[1];
-        CommandTemplate target = engine.getCommand(targetName);
+        Command target = engine.getCommand(targetName);
 
         // Check if target command exists
         if (target == null) {
@@ -53,7 +53,7 @@ public class Alias implements CommandTemplate {
         }
 
         // Create a lightweight wrapper command
-        CommandTemplate alias = new CommandTemplate() {
+        Command alias = new Command() {
             @Override
             public String getName() {
                 return newName;
@@ -76,7 +76,7 @@ public class Alias implements CommandTemplate {
             }
         };
 
-        engine.register(alias);
+        engine.register(alias, CATEGORY);
         System.out.println("Alias created: " + newName + " -> " + targetName);
     }
 }

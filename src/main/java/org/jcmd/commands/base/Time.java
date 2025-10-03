@@ -1,9 +1,9 @@
 package org.jcmd.commands.base;
 
-import org.jcmd.core.CommandTemplate;
+import org.jcmd.core.Command;
 import org.jcmd.core.Variables;
 
-public class Time implements CommandTemplate {
+public class Time implements Command {
 
     private final String NAME = "time";
     private final String DESCRIPTION = "Displays the current system time.";

@@ -1,9 +1,9 @@
 package org.jcmd.commands.base;
 
-import org.jcmd.core.CommandTemplate;
+import org.jcmd.core.Command;
 import org.jcmd.core.JCMD;
 
-public class Name implements CommandTemplate {
+public class Name implements Command {
     protected final JCMD engine;
 
     private final String NAME = "name";

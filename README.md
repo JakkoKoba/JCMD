@@ -1,12 +1,12 @@
 # JCMD - Java Command Framework
 
-JCMD is a **lightweight Java CLI framework** that allows developers to build interactive commandTemplate-line applications with modular, extensible commands.  
-It features a REPL (Read-Eval-Print Loop) interface, dynamic commandTemplate registration, and safe error handling. JCMD can be used in **games, developer tools, runtime consoles, or scripting utilities**.
+JCMD is a **lightweight Java CLI framework** that allows developers to build interactive command-line applications with modular, extensible commands.  
+It features a REPL (Read-Eval-Print Loop) interface, dynamic command registration, and safe error handling. JCMD can be used in **games, developer tools, runtime consoles, or scripting utilities**.
 
 ---
 
 ## Features
-- Modular commandTemplate registration and execution
+- Modular command registration and execution
 - Interactive REPL interface
 - Extensible design: easily add new commands
 - Error handling for safe execution
@@ -51,8 +51,8 @@ Exiting CLI...
 ## Available Core/Base Commands
 
 #### Core Package:
-- `alias` — Create commandTemplate aliases
-- `commandTemplate` — Register/Unregister commands
+- `alias` — Create command aliases
+- `command` — Register/Unregister commands
 - `env` — Print environment variables
 - `exit` — Stops the CLI
 - `help` — Lists available commands
