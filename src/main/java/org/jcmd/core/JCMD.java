@@ -74,9 +74,9 @@ public class JCMD {
 
     // Execute a command programmatically
     public void execute(String input) {
-        execute(input, true);
+        execute(input, true, true);
     }
-    public void execute(String input, boolean showInput) {
+    public void execute(String input, boolean showInput, boolean newLinePrefix) {
         // Basic validation
         if (input == null || input.trim().isEmpty() || !running) return;
 
@@ -98,7 +98,8 @@ public class JCMD {
         } else {
             System.out.println("Unknown command: " + name);
         }
-        System.out.print("> ");
+
+        if (newLinePrefix) System.out.print("> ");
     }
 
     // Stop JCMD

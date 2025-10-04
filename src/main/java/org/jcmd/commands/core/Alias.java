@@ -3,6 +3,7 @@ package org.jcmd.commands.core;
 import org.jcmd.core.Command;
 import org.jcmd.core.JCMD;
 
+import java.util.Arrays;
 import java.util.Objects;
 
 public class Alias implements Command {
@@ -38,6 +39,7 @@ public class Alias implements Command {
 
         String newName = args[0];
         String targetName = args[1];
+        String[] bakedArgs = Arrays.copyOfRange(args, 2, args.length);
         Command target = engine.getCommand(targetName);
 
         // Check if target command exists
@@ -67,9 +69,24 @@ public class Alias implements Command {
                 return "Alias for '" + targetName + "'";
             }
             @Override
-            public void execute(String[] a) {
+            public void execute(String[] runtimeArgs) {
+                // Start with the target command name
+                StringBuilder commandBuilder = new StringBuilder(targetName);
+
+                // Append baked arguments
+                for (String arg : bakedArgs) {
+                    commandBuilder.append(" ").append(arg);
+                }
+
+                // Append runtime arguments
+                for (String arg : runtimeArgs) {
+                    commandBuilder.append(" ").append(arg);
+                }
+
+                String combinedCommand = commandBuilder.toString();
+
                 try {
-                    target.execute(a);
+                    engine.execute(combinedCommand, false, false); // delegate to engine with full command string
                 } catch (Exception e) {
                     System.out.println("Error in alias target: " + e.getMessage());
                 }
