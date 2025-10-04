@@ -1,4 +1,4 @@
-package org.jcmd.commands.core;
+package org.jcmd.commands.base;
 
 import org.jcmd.core.Command;
 import org.jcmd.core.JCMD;
@@ -12,7 +12,7 @@ public class Alias implements Command {
 
     private final String NAME = "alias";
     private final String DESCRIPTION = "Creates an alias for an existing command.";
-    private final String CATEGORY = "Core";
+    private final String CATEGORY = "Base";
 
     public Alias(JCMD engine) {
         this.engine = engine;
@@ -94,6 +94,6 @@ public class Alias implements Command {
         };
 
         engine.register(alias, CATEGORY);
-        System.out.println("Alias created: " + newName + " -> " + targetName);
+        System.out.println("Alias created: " + newName + " -> " + targetName + (bakedArgs.length > 0 ? " " + String.join(" ", bakedArgs) : ""));
     }
 }

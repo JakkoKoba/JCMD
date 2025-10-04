@@ -23,14 +23,17 @@ It features a REPL (Read-Eval-Print Loop) interface, dynamic command registratio
 ## Example Usage
 
 ```java
-JCMD app = new JCMD();
+import org.jcmd.core.JCMD;
 
-// Register commands
-app.registerCoreCommands();
-app.register(new Echo());
+public class Main {
 
-// Start CLI
-app.run();
+    final static JCMD engine = new JCMD();
+
+    public static void main(String[] args) {
+        engine.registerPackage("core");
+        engine.run();
+    }
+}
 ```
 
 ## Sample console session:
@@ -40,11 +43,11 @@ JCMD started. Type 'exit' to leave.
 Hello World 2025!
 > command -reg org.jcmd.commands.base.date
 Command registered: date
-> date YYYY
+> alias year date YYYY
+alias created: year -> date YYYY
+> year
 2025
-> alias ex exit
-Alias created: ex -> exit
-> ex
+> exit
 Exiting CLI...
 ```
 

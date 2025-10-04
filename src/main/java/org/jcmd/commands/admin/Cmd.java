@@ -1,4 +1,4 @@
-package org.jcmd.commands.core;
+package org.jcmd.commands.admin;
 
 import org.jcmd.core.Command;
 import org.jcmd.core.JCMD;
@@ -11,7 +11,7 @@ public class Cmd implements Command {
 
     private final String NAME = "command";
     private final String DESCRIPTION = "Register or unregister commands.";
-    private final String CATEGORY = "Core";
+    private final String CATEGORY = "Admin";
 
     public Cmd(JCMD engine) {
         this.engine = engine;
@@ -76,7 +76,7 @@ public class Cmd implements Command {
                 System.out.println("No such command registered: " + target);
                 return;
             }
-            if (Objects.equals(engine.getCommand(target).getCategory(), "Core")) {
+            if (Objects.equals(cmd.getCategory(), "Core") || Objects.equals(cmd.getName(), "command")) {
                 System.out.println("Cannot unregister core commands.");
                 return;
             }

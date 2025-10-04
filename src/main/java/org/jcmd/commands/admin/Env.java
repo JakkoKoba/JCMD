@@ -1,4 +1,4 @@
-package org.jcmd.commands.core;
+package org.jcmd.commands.admin;
 
 import org.jcmd.core.Command;
 import org.jcmd.core.JCMD;
@@ -12,7 +12,7 @@ public class Env implements Command {
 
     private final String NAME = "env";
     private final String DESCRIPTION = "Get the current environment variables.";
-    private final String CATEGORY = "Core";
+    private final String CATEGORY = "Admin";
 
     public Env(JCMD engine) {
         this.engine = engine;

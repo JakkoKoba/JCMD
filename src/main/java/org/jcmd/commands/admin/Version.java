@@ -1,4 +1,4 @@
-package org.jcmd.commands.core;
+package org.jcmd.commands.admin;
 
 import org.jcmd.core.Command;
 import org.jcmd.core.JCMD;
@@ -8,7 +8,7 @@ public class Version implements Command {
 
     private final String NAME = "version";
     private final String DESCRIPTION = "Shows the current version of JCMD, Java, and Maven.";
-    private final String CATEGORY = "Core";
+    private final String CATEGORY = "Admin";
 
     public Version(JCMD engine) {
         this.engine = engine;

@@ -2,14 +2,9 @@ package org.jcmd.core;
 
 import org.jcmd.commands.templates.CommandWrapper;
 
-import java.util.Arrays;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.concurrent.CountDownLatch;
+import java.util.regex.Pattern;
 
 public class JCMD {
 
@@ -24,39 +19,50 @@ public class JCMD {
 
     public static final String PROJECT_NAME = BuildInfo.PROJECT_NAME;
     public static final String PROJECT_DESCRIPTION = BuildInfo.PROJECT_DESCRIPTION;
+    public static final String HEADER = "Hello ${user}";
 
     private final PackageReg pack = new PackageReg();
 
-    // Run JCMD
+    // ------------------ Run Methods ------------------
+
     public void run() {
         run(true);
     }
     public void run(boolean showHeader) {
-        if (showHeader) System.out.println(PROJECT_NAME + " started. Type 'exit' to leave.");
+        if (showHeader) execute("echo " + HEADER, false, false);
         ready.countDown(); // Signal that JCMD is ready
+
         while (running) {
             System.out.print("> ");
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) continue; // Ignore empty input
 
-            String[] parts = input.split("\\s+"); // Split input into command and arguments
-            String name = parts[0]; // Command name
-            String[] args = Arrays.copyOfRange(parts, 1, parts.length); // Command arguments
+            // Split input into multiple commands using your prefix
+            String[] commandsSplit = input.split("\\s*" + Pattern.quote(Variables.NEW_COMMAND_PREFIX) + "\\s*");
 
-            Command command = commands.get(name);
-            if (command != null) {
-                try {
-                    command.execute(args);
-                } catch (Exception e) {
-                    System.out.println("Error: " + e.getMessage());
+            for (String cmdLine : commandsSplit) {
+                String[] parts = cmdLine.trim().split("\\s+");
+                if (parts.length == 0) continue;
+
+                String name = parts[0];
+                String[] args = Arrays.copyOfRange(parts, 1, parts.length);
+
+                Command command = getCommand(name);
+                if (command != null) {
+                    try {
+                        command.execute(args);
+                    } catch (Exception e) {
+                        System.out.println("Error: " + e.getMessage());
+                    }
+                } else {
+                    System.out.println("Unknown command: " + name);
                 }
-            } else {
-                System.out.println("Unknown command: " + name);
             }
         }
     }
 
-    // Run JCMD asynchronously
+    // ------------------ Run Async Methods ------------------
+
     public Thread runAsync() {
         return runAsync(false, true);
     }
@@ -72,7 +78,8 @@ public class JCMD {
         return thread;
     }
 
-    // Execute a command programmatically
+    // ------------------ Execute Methods ------------------
+
     public void execute(String input) {
         execute(input, true, true);
     }
@@ -96,28 +103,14 @@ public class JCMD {
                 System.out.println("Error: " + e.getMessage());
             }
         } else {
-            System.out.println("Unknown command: " + name);
+            System.out.println("Unknown command: " + name + ". Use 'help' to see all commands.");
         }
 
         if (newLinePrefix) System.out.print("> ");
     }
 
-    // Stop JCMD
-    public void stop() {
-        running = false;
-    }
+    // ------------------ Command Management ------------------
 
-    // Get a collection of all registered commands
-    public Collection<Command> getCommands() {
-        return commands.values();
-    }
-
-    // Fetch a command by name
-    public Command getCommand(String name) {
-        return commands.get(name);
-    }
-
-    // Register a command
     public void register(Command command, String packageKey) {
         if (command == null) throw new IllegalArgumentException("Command cannot be null");
 
@@ -137,8 +130,6 @@ public class JCMD {
 
         commands.put(name, command);
     }
-
-    // Unregister a command
     public void unregister(String name) {
         Command removed = commands.remove(name);
 
@@ -156,22 +147,15 @@ public class JCMD {
         }
     }
 
-    // Find aliases that reference the given command name
-    private List<String> getStrings(String name) {
-        List<String> aliasesToRemove = new ArrayList<>();
-        for (Map.Entry<String, Command> entry : commands.entrySet()) { // Iterate over a copy to avoid ConcurrentModificationException
-            Command cmd = entry.getValue();
-            if ("Alias".equals(cmd.getCategory())) {
-                String desc = cmd.getDescription();
-                if (desc != null && desc.contains("'" + name + "'")) {
-                    aliasesToRemove.add(entry.getKey());
-                }
-            }
-        }
-        return aliasesToRemove;
+    public Collection<Command> getCommands() {
+        return commands.values();
+    }
+    public Command getCommand(String name) {
+        return commands.get(name);
     }
 
-    // Convert a string to a Cmd instance using reflection
+    // ------------------ Reflection Utilities ------------------
+
     public Command stringToCommand(String className)
             throws ReflectiveOperationException {
 
@@ -215,7 +199,25 @@ public class JCMD {
         return instance;
     }
 
-    // Register packages
+
+    // ------------------ Helper Commands ------------------
+
+    private List<String> getStrings(String name) {
+        List<String> aliasesToRemove = new ArrayList<>();
+        for (Map.Entry<String, Command> entry : commands.entrySet()) { // Iterate over a copy to avoid ConcurrentModificationException
+            Command cmd = entry.getValue();
+            if ("Alias".equals(cmd.getCategory())) {
+                String desc = cmd.getDescription();
+                if (desc != null && desc.contains("'" + name + "'")) {
+                    aliasesToRemove.add(entry.getKey());
+                }
+            }
+        }
+        return aliasesToRemove;
+    } // Used by unregister
+
+    // ------------------ Package Registration ------------------
+
     public void registerPackage(String key) {
         String[] classNames = pack.registry.get(key.toLowerCase());
         String packageName = pack.names.get(key.toLowerCase());
@@ -235,5 +237,11 @@ public class JCMD {
                 System.out.println("Failed to register: " + className + " -> " + e.getMessage());
             }
         }
+    }
+
+    // ------------------ Stop Method ------------------
+
+    public void stop() {
+        running = false;
     }
 }

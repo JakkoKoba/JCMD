@@ -11,6 +11,7 @@ public class Variables {
     public static String TIME_FORMAT = "HH:mm:ss";
     public static String DATE_FORMAT = "yyyy-MM-dd";
     public static String VAR_PREFIX = "${ }"; // Prefix must include space
+    public static String NEW_COMMAND_PREFIX = "||";
 
     // Command Registration Flags
     public static String COMMAND_REGISTER_FLAG = "-reg";
@@ -28,22 +29,20 @@ public class Variables {
         try {
             return LocalTime.now().format(DateTimeFormatter.ofPattern(timeFormat));
         } catch (UnsupportedTemporalTypeException e) {
-            System.out.print("Invalid time format pattern for LocalTime: " + timeFormat);
+            return "[Invalid date format pattern for LocalDate: " + timeFormat + "]";
         } catch (IllegalArgumentException e) {
-            System.out.print("Invalid time format syntax: " + timeFormat);
+            return "[Invalid date format syntax: " + timeFormat + "]";
         }
-        return "";
     }
     public String date(String[] args) {
         String dateFormat = (args.length > 0) ? String.join(" ", args) : "yyyy-MM-dd"; // default
         try {
             return LocalDate.now().format(DateTimeFormatter.ofPattern(dateFormat));
         } catch (UnsupportedTemporalTypeException e) {
-            System.out.print("Invalid date format pattern for LocalDate: " + dateFormat);
+            return "[Invalid date format pattern for LocalDate: " + dateFormat + "]";
         } catch (IllegalArgumentException e) {
-            System.out.print("Invalid date format syntax: " + dateFormat);
+            return "[Invalid date format syntax: " + dateFormat + "]";
         }
-        return "";
     }
     public String user(String[] args) {
         return USER_NAME;

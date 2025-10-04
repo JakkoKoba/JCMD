@@ -62,7 +62,7 @@ public class Echo implements Command {
                 break;
             }
 
-            String commandStr = input.substring(open + VAR_PREFIX_OPEN.length(), close).trim();
+            String commandStr = input.substring(open + VAR_PREFIX_OPEN.length(), close);
             if (commandStr.isEmpty()) {
                 result.append(prefix);
                 start = close + VAR_PREFIX_CLOSE.length();
@@ -70,7 +70,7 @@ public class Echo implements Command {
             }
 
             // Split method name and optional arguments
-            String[] parts = commandStr.split("\\s+");
+            String[] parts = commandStr.trim().split("\\s+");
             String methodName = parts[0];
             String[] methodArgs = Arrays.copyOfRange(parts, 1, parts.length);
 
@@ -87,12 +87,14 @@ public class Echo implements Command {
                 }
             } catch (Exception e) {
                 result.append("Error in ").append(methodName).append(": ").append(e.getMessage());
+                start = close + VAR_PREFIX_CLOSE.length();
+                continue;
             }
 
             start = close + VAR_PREFIX_CLOSE.length();
         }
 
-        System.out.println(result.toString());
+        System.out.println(result);
     }
 
     private Method findVariableMethod(String name) {

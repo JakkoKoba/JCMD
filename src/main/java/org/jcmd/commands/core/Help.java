@@ -7,7 +7,7 @@ public class Help implements Command {
     private final JCMD engine;
 
     private final String NAME = "help";
-    private final String DESCRIPTION = "Lists all available commands.";
+    private final String DESCRIPTION = "Get information about a specific command.";
     private final String CATEGORY = "Core";
 
     public Help(JCMD engine) {
@@ -29,24 +29,25 @@ public class Help implements Command {
     @Override
     public void execute(String[] args) {
         if (args.length == 0) {
-            // No category specified, list all commands
-            System.out.println("Available commands:");
-            for (Command c : engine.getCommands()) {
-                System.out.printf("  %-10s : (%s) %s%n", c.getName(), c.getCategory(), c.getDescription());
-            }
+            // No command specified
+            System.out.println("Welcome to the JCMD Framework! \n" +
+                    "- Type commands to perform actions.\n" +
+                    "- Use 'list' to see what commands are available.\n" +
+                    "- Use 'help <command>' to learn how a specific command works.\n" +
+                    "- Use 'exit' to quit the program.\n" +
+                    "\n" +
+                    "Start by typing 'list' to discover commands you can try.");
         } else {
-            // Filter by category
-            String filterCategory = args[0];
-            System.out.println("Commands in category '" + filterCategory + "':");
-            boolean found = false;
-            for (Command c : engine.getCommands()) {
-                if (c.getCategory() != null && c.getCategory().equalsIgnoreCase(filterCategory)) {
-                    System.out.printf("  %-10s : %s%n", c.getName(), c.getDescription());
-                    found = true;
-                }
+            String commandName = args[0];
+            Command c;
+            if (engine.getCommand(commandName) == null) {
+                System.out.println(commandName + " not found! Try again.");
+                return;
             }
-            if (!found) {
-                System.out.println("  No commands found in this category.");
+            c = engine.getCommand(commandName);
+            if (c.getName() != null) {
+                System.out.println(c.getName() + ": " + c.getCategory() + "\n" +
+                        c.getDescription());
             }
         }
     }

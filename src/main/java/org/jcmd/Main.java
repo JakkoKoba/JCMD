@@ -7,14 +7,13 @@ public class Main {
     final static JCMD engine = new JCMD();
 
     public static void init() {
+        engine.registerPackage("admin");
         engine.registerPackage("base");
         engine.registerPackage("core");
     }
 
     public static void main(String[] args) {
         init();
-        engine.runAsync(false, true);
-        engine.execute("echo Hello ${user}");
-        engine.execute("version");
+        engine.run();
     }
 }
