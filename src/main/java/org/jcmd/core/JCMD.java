@@ -29,6 +29,11 @@ public class JCMD {
         run(true);
     }
     public void run(boolean showHeader) {
+        if (getCommand("exit") == null) {
+            System.out.println("No core package registered.");
+            return;
+        }
+
         if (showHeader) execute("echo " + HEADER, false, false);
         ready.countDown(); // Signal that JCMD is ready
 

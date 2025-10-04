@@ -31,6 +31,7 @@ public class Main {
 
     public static void main(String[] args) {
         engine.registerPackage("core");
+        engine.register(new org.jcmd.commands.base.Echo());
         engine.run();
     }
 }
@@ -51,21 +52,23 @@ alias created: year -> date YYYY
 Exiting CLI...
 ```
 
-## Available Core/Base Commands
+## Available Commands
 
 #### Core Package:
-- `alias` — Create command aliases
-- `command` — Register/Unregister commands
-- `env` — Print environment variables
 - `exit` — Stops the CLI
-- `help` — Lists available commands
-- `version` — Shows JCMD version
+- `help` — Get information about commands
+- `list` — Lists available commands
 #### Base Package:
+- `alias` — Create command aliases
 - `date` — Displays the current date
-- `desc` - Print the project description
 - `echo` — Print messages to the console
-- `name` — Displays the project name
 - `time` — Displays the current time
+#### Admin Package:
+- `command` — Register/Unregister commands
+- `desc` - Print the project description
+- `env` — Print environment variables
+- `name` — Displays the project name
+- `version` — Shows JCMD version
 
 ---
 
@@ -79,20 +82,11 @@ git clone https://github.com/JakkoKoba/jcmd.git
 ```bash
 cd jcmd
 ```
-
----
-
-### Building with maven:
-Full package:
+3. Building with maven:
 ```bash
 mvn clean package
 ```
-Core package only:
-```bash
-mvn clean package -Pcore
-```
-
-### Run the CLI:
+4. Run the CLI:
 ```bash
 java -jar target/jcmd-0.1.3.jar
 ```
