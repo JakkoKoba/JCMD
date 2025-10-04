@@ -13,6 +13,8 @@ public class Main {
 
     public static void main(String[] args) {
         init();
-        engine.run();
+        engine.runAsync(false, true);
+        engine.execute("echo Hello ${user}");
+        engine.execute("version");
     }
 }

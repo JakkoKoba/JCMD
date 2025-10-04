@@ -34,7 +34,6 @@ public class Variables {
         }
         return "";
     }
-
     public String date(String[] args) {
         String dateFormat = (args.length > 0) ? String.join(" ", args) : "yyyy-MM-dd"; // default
         try {
@@ -45,6 +44,9 @@ public class Variables {
             System.out.print("Invalid date format syntax: " + dateFormat);
         }
         return "";
+    }
+    public String user(String[] args) {
+        return USER_NAME;
     }
 }
 

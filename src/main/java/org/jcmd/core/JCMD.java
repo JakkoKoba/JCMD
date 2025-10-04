@@ -1,7 +1,5 @@
 package org.jcmd.core;
 
-import org.jcmd.commands.core.*;
-import org.jcmd.commands.base.*;
 import org.jcmd.commands.templates.CommandWrapper;
 
 import java.util.Arrays;
@@ -11,12 +9,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
+import java.util.concurrent.CountDownLatch;
 
 public class JCMD {
 
     private final Map<String, Command> commands = new TreeMap<>();
     private final Scanner scanner = new Scanner(System.in);
     private boolean running = true;
+    private final CountDownLatch ready = new CountDownLatch(1);
 
     public static final String JCMD_VERSION = BuildInfo.JCMD_VERSION;
     public static final String JAVA_VERSION = BuildInfo.JAVA_VERSION;
@@ -29,7 +29,11 @@ public class JCMD {
 
     // Run JCMD
     public void run() {
-        System.out.println(PROJECT_NAME + " started. Type 'exit' to leave.");
+        run(true);
+    }
+    public void run(boolean showHeader) {
+        if (showHeader) System.out.println(PROJECT_NAME + " started. Type 'exit' to leave.");
+        ready.countDown(); // Signal that JCMD is ready
         while (running) {
             System.out.print("> ");
             String input = scanner.nextLine().trim();
@@ -50,6 +54,51 @@ public class JCMD {
                 System.out.println("Unknown command: " + name);
             }
         }
+    }
+
+    // Run JCMD asynchronously
+    public Thread runAsync() {
+        return runAsync(false, true);
+    }
+    public Thread runAsync(boolean autoClose, boolean showHeader) {
+        Thread thread = new Thread(() -> run(showHeader), "JCMD-Thread");
+        thread.setDaemon(autoClose);
+        thread.start();
+        try {
+            ready.await(); // Wait until JCMD is ready
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
+        return thread;
+    }
+
+    // Execute a command programmatically
+    public void execute(String input) {
+        execute(input, true);
+    }
+    public void execute(String input, boolean showInput) {
+        // Basic validation
+        if (input == null || input.trim().isEmpty() || !running) return;
+
+        if (showInput) System.out.println(input);
+
+        // Parse input
+        String[] parts = input.trim().split("\\s+");
+        String name = parts[0];
+        String[] args = Arrays.copyOfRange(parts, 1, parts.length);
+
+        // Find and execute command
+        Command command = commands.get(name);
+        if (command != null) {
+            try {
+                command.execute(args);
+            } catch (Exception e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Unknown command: " + name);
+        }
+        System.out.print("> ");
     }
 
     // Stop JCMD
@@ -187,4 +236,3 @@ public class JCMD {
         }
     }
 }
-
