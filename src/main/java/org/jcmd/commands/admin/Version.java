@@ -31,5 +31,6 @@ public class Version implements Command {
         System.out.println("Java Version: " + engine.JAVA_VERSION);
         System.out.println("Maven Version: " + engine.MAVEN_VERSION);
         System.out.println("Current JCMD version: " + engine.JCMD_VERSION);
+        System.out.println("Current JQuill version: " + engine.JQUILL_VERSION);
     }
 }

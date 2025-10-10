@@ -2,6 +2,7 @@ package org.jcmd.commands.base;
 
 import org.jcmd.core.Command;
 import org.jcmd.core.JCMD;
+import org.jquill.Debug;
 
 import java.util.Arrays;
 import java.util.Objects;
@@ -33,7 +34,7 @@ public class Alias implements Command {
     @Override
     public void execute(String[] args) {
         if (args.length < 2) {
-            System.out.println("Usage: " + NAME + " <newName> <existingCommand>");
+            Debug.warn("Usage: " + NAME + " <newName> <existingCommand>");
             return;
         }
 
@@ -44,13 +45,13 @@ public class Alias implements Command {
 
         // Check if target command exists
         if (target == null) {
-            System.out.println("No such command: " + targetName);
+            Debug.warn("No such command: " + targetName);
             return;
         }
 
         // Prevent aliasing an alias
         if (Objects.equals(target.getCategory(), "Alias")) {
-            System.out.println("Cannot create an alias to another alias.");
+            Debug.warn("Cannot create an alias to another alias.");
             return;
         }
 
@@ -88,12 +89,12 @@ public class Alias implements Command {
                 try {
                     engine.execute(combinedCommand, false, false); // delegate to engine with full command string
                 } catch (Exception e) {
-                    System.out.println("Error in alias target: " + e.getMessage());
+                    Debug.error("Error in alias target: " + e.getMessage());
                 }
             }
         };
 
         engine.register(alias, CATEGORY);
-        System.out.println("Alias created: " + newName + " -> " + targetName + (bakedArgs.length > 0 ? " " + String.join(" ", bakedArgs) : ""));
+        Debug.success("Alias created: " + newName + " -> " + targetName + (bakedArgs.length > 0 ? " " + String.join(" ", bakedArgs) : ""));
     }
 }

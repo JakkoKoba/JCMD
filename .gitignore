@@ -8,6 +8,5 @@ target/
 out/
 *.log
 *.class
-*.jar
 *.war
 *.ear

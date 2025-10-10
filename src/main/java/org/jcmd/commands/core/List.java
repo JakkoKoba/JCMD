@@ -2,6 +2,7 @@ package org.jcmd.commands.core;
 
 import org.jcmd.core.Command;
 import org.jcmd.core.JCMD;
+import org.jquill.Debug;
 
 public class List implements Command {
     private final JCMD engine;
@@ -46,7 +47,7 @@ public class List implements Command {
                 }
             }
             if (!found) {
-                System.out.println("  No commands found in this category.");
+                Debug.warn("  No commands found in this category.");
             }
         }
     }

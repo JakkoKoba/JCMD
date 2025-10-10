@@ -3,6 +3,7 @@ package org.jcmd.commands.admin;
 import org.jcmd.core.Command;
 import org.jcmd.core.JCMD;
 import org.jcmd.core.Variables;
+import org.jquill.Debug;
 
 import java.util.Objects;
 
@@ -37,8 +38,9 @@ public class Cmd implements Command {
         String REGISTER_FLAG = Variables.COMMAND_REGISTER_FLAG;
         String UNREGISTER_FLAG = Variables.COMMAND_UNREGISTER_FLAG;
         if (args.length < 2) {
-            System.out.println("Usage: " + NAME + " " + REGISTER_FLAG + " <className>");
-            System.out.println("       " + NAME + " " + UNREGISTER_FLAG + " <commandName>");
+            Debug.warn("Unknown usage of '" + NAME + "'");
+            Debug.info(NAME + " " + REGISTER_FLAG + " org.jcmd.commands.<package>.<name>");
+            Debug.info(NAME + " " + UNREGISTER_FLAG + " <commandName>");
             return;
         }
 
@@ -57,14 +59,14 @@ public class Cmd implements Command {
 
                 // Register the command
                 engine.register(cmdInstance, packageKey);
-                System.out.println("Registered command: " + cmdInstance.getName());
+                Debug.success("Registered command: " + cmdInstance.getName());
 
             } catch (ClassNotFoundException e) {
-                System.out.println("Class not found: " + target);
+                Debug.warn("Class not found: " + target);
             } catch (IllegalArgumentException e) {
-                System.out.println("Invalid command class: " + e.getMessage());
+                Debug.error("Invalid command class: " + e.getMessage());
             } catch (ReflectiveOperationException e) {
-                System.out.println("Error creating command instance: " + e.getMessage());
+                Debug.error("Error creating command instance: " + e.getMessage());
             }
             return;
         }
@@ -73,19 +75,20 @@ public class Cmd implements Command {
         if (action.equals(UNREGISTER_FLAG)) {
             Command cmd = engine.getCommand(target);
             if (cmd == null) {
-                System.out.println("No such command registered: " + target);
+                Debug.warn("No such command registered: " + target);
                 return;
             }
             if (Objects.equals(cmd.getCategory(), "Core") || Objects.equals(cmd.getName(), "command")) {
-                System.out.println("Cannot unregister core commands.");
+                Debug.warn("Cannot unregister core commands.");
                 return;
             }
             engine.unregister(target);
-            System.out.println("Unregistered command: " + target);
+            Debug.success("Unregistered command: " + target);
             return;
         }
+
         // Unknown flag
-        System.out.println("Unknown action: " + action);
-        System.out.println("Use " + REGISTER_FLAG + " or " + UNREGISTER_FLAG + ".");
+        Debug.warn("Unknown action: " + action);
+        Debug.info("Use " + REGISTER_FLAG + " or " + UNREGISTER_FLAG + ".");
     }
 }

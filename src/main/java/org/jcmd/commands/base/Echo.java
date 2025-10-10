@@ -2,6 +2,7 @@ package org.jcmd.commands.base;
 
 import org.jcmd.core.Command;
 import org.jcmd.core.Variables;
+import org.jquill.Debug;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -31,7 +32,9 @@ public class Echo implements Command {
         int spaceIndex = trimmed.indexOf(' ');
 
         if (spaceIndex == -1 || spaceIndex == 0 || spaceIndex == trimmed.length() - 1) {
-            throw new IllegalArgumentException("Prefix must contain a space separating open and close delimiters");
+            String msg = "Prefix must contain a space separating open and close delimiters";
+            Debug.warn(msg);
+            throw new IllegalArgumentException(msg);
         }
 
         VAR_PREFIX_OPEN = trimmed.substring(0, spaceIndex);

@@ -22,6 +22,7 @@ public class BuildInfo {
     public static final String MAVEN_VERSION = props.getProperty("maven.version", "unknown");
     public static final String JAVA_VERSION = props.getProperty("java.version", System.getProperty("java.version"));
     public static final String JCMD_VERSION = props.getProperty("jcmd.version", "unknown");
+    public static final String JQUILL_VERSION = props.getProperty("jquill.version", "unknown");
 
     public static final String PROJECT_NAME = props.getProperty("project.name", "JCMD");
     public static final String PROJECT_DESCRIPTION = props.getProperty("project.description", "A Java command line tool.");

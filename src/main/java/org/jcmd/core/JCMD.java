@@ -1,6 +1,7 @@
 package org.jcmd.core;
 
 import org.jcmd.commands.templates.CommandWrapper;
+import org.jquill.Debug;
 
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
@@ -16,6 +17,7 @@ public class JCMD {
     public static final String JCMD_VERSION = BuildInfo.JCMD_VERSION;
     public static final String JAVA_VERSION = BuildInfo.JAVA_VERSION;
     public final String MAVEN_VERSION = BuildInfo.MAVEN_VERSION;
+    public final String JQUILL_VERSION = BuildInfo.JQUILL_VERSION;
 
     public static final String PROJECT_NAME = BuildInfo.PROJECT_NAME;
     public static final String PROJECT_DESCRIPTION = BuildInfo.PROJECT_DESCRIPTION;
@@ -30,7 +32,7 @@ public class JCMD {
     }
     public void run(boolean showHeader) {
         if (getCommand("exit") == null) {
-            System.out.println("No core package registered.");
+            Debug.error("No core package registered.");
             return;
         }
 
@@ -57,10 +59,10 @@ public class JCMD {
                     try {
                         command.execute(args);
                     } catch (Exception e) {
-                        System.out.println("Error: " + e.getMessage());
+                        Debug.error("Error: " + e.getMessage());
                     }
                 } else {
-                    System.out.println("Unknown command: " + name);
+                    Debug.error("Unknown command: " + name);
                 }
             }
         }
@@ -105,10 +107,10 @@ public class JCMD {
             try {
                 command.execute(args);
             } catch (Exception e) {
-                System.out.println("Error: " + e.getMessage());
+                Debug.error(e.getMessage());
             }
         } else {
-            System.out.println("Unknown command: " + name + ". Use 'help' to see all commands.");
+            Debug.error("Unknown command: " + name + ". Use 'list' to see all commands.");
         }
 
         if (newLinePrefix) System.out.print("> ");
@@ -124,14 +126,23 @@ public class JCMD {
         if (name == null || name.isEmpty())
             throw new IllegalArgumentException("Command name cannot be null or empty");
 
-        // If name already exists, automatically namespace it
+        // If name already exists under a different package, namespace it
         if (commands.containsKey(name)) {
-            String namespaced = packageKey + "." + name;
-            System.out.println("Warning: Command '" + name + "' conflicts. Registered as '" + namespaced + "'.");
-            name = namespaced;
-            // Wrap the command to override getName
-            command = new CommandWrapper(command, name);
+            Command existing = commands.get(name);
+
+            // Only namespace if the existing command is from a different package
+            if (!Objects.equals(existing.getCategory().toLowerCase(), packageKey)) {
+                String namespaced = packageKey + "." + name;
+                Debug.error("Command '" + name + "' conflicts. Registered as '" + namespaced + "'.");
+
+                // Wrap the original command so getName() returns the namespaced name
+                command = new CommandWrapper(command, namespaced);
+                name = namespaced;
+                return;
+            }
+
         }
+
 
         commands.put(name, command);
     }
@@ -159,9 +170,22 @@ public class JCMD {
         return commands.get(name);
     }
 
-    // ------------------ Reflection Utilities ------------------
+    // ------------------ Helper Commands ------------------
 
-    public Command stringToCommand(String className)
+    private List<String> getStrings(String name) {
+        List<String> aliasesToRemove = new ArrayList<>();
+        for (Map.Entry<String, Command> entry : commands.entrySet()) { // Iterate over a copy to avoid ConcurrentModificationException
+            Command cmd = entry.getValue();
+            if ("Alias".equals(cmd.getCategory())) {
+                String desc = cmd.getDescription();
+                if (desc != null && desc.contains("'" + name + "'")) {
+                    aliasesToRemove.add(entry.getKey());
+                }
+            }
+        }
+        return aliasesToRemove;
+    } // Used by unregister
+    public Command stringToCommand(String className) // Used by register
             throws ReflectiveOperationException {
 
         // Ensure fully-qualified name
@@ -204,23 +228,6 @@ public class JCMD {
         return instance;
     }
 
-
-    // ------------------ Helper Commands ------------------
-
-    private List<String> getStrings(String name) {
-        List<String> aliasesToRemove = new ArrayList<>();
-        for (Map.Entry<String, Command> entry : commands.entrySet()) { // Iterate over a copy to avoid ConcurrentModificationException
-            Command cmd = entry.getValue();
-            if ("Alias".equals(cmd.getCategory())) {
-                String desc = cmd.getDescription();
-                if (desc != null && desc.contains("'" + name + "'")) {
-                    aliasesToRemove.add(entry.getKey());
-                }
-            }
-        }
-        return aliasesToRemove;
-    } // Used by unregister
-
     // ------------------ Package Registration ------------------
 
     public void registerPackage(String key) {
@@ -229,7 +236,7 @@ public class JCMD {
 
         // Validate package key
         if (classNames == null || packageName == null) {
-            System.out.println("Unknown package key: " + key);
+            Debug.error("Unknown package key: " + key);
             return;
         }
 
@@ -239,7 +246,7 @@ public class JCMD {
                 Command cmd = stringToCommand(packageName + "." + className);
                 register(cmd, key.toLowerCase()); // Pass package key for namespacing
             } catch (Exception e) {
-                System.out.println("Failed to register: " + className + " -> " + e.getMessage());
+                Debug.error("Failed to register: " + className + " -> " + e.getMessage());
             }
         }
     }

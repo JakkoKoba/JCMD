@@ -2,6 +2,7 @@ package org.jcmd.commands.core;
 
 import org.jcmd.core.Command;
 import org.jcmd.core.JCMD;
+import org.jquill.Debug;
 
 public class Help implements Command {
     private final JCMD engine;
@@ -41,7 +42,7 @@ public class Help implements Command {
             String commandName = args[0];
             Command c;
             if (engine.getCommand(commandName) == null) {
-                System.out.println(commandName + " not found! Try again.");
+                Debug.warn(commandName + " not found! Try again.");
                 return;
             }
             c = engine.getCommand(commandName);

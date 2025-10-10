@@ -2,6 +2,7 @@ package org.jcmd.commands.base;
 
 import org.jcmd.core.Command;
 import org.jcmd.core.Variables;
+import org.jquill.Debug;
 
 public class Date implements Command {
 
@@ -32,7 +33,7 @@ public class Date implements Command {
             String date = java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.ofPattern(format));
             System.out.println(date);
         } catch (IllegalArgumentException e) {
-            System.out.println("Invalid date format pattern: " + format);
+            Debug.warn("Invalid date format pattern: " + format);
         }
     }
 }

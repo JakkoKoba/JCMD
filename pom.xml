@@ -17,6 +17,8 @@
         <maven.compiler.target>24</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <mainClass>${project.groupId}.Main</mainClass>
+
+        <jquill.version>1.0.0</jquill.version>
     </properties>
 
     <build>
@@ -64,4 +66,13 @@
         </resources>
 
     </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.jakkokoba</groupId>
+            <artifactId>jquill</artifactId>
+            <version>${jquill.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>

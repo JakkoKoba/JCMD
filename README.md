@@ -24,6 +24,7 @@ It features a REPL (Read-Eval-Print Loop) interface, dynamic command registratio
 
 ```java
 import org.jcmd.core.JCMD;
+import org.jcmd.commands.base.*;
 
 public class Main {
 
@@ -31,7 +32,7 @@ public class Main {
 
     public static void main(String[] args) {
         engine.registerPackage("core");
-        engine.register(new org.jcmd.commands.base.Echo());
+        engine.register(new Echo(), "base");
         engine.run();
     }
 }
