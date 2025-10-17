@@ -1,9 +1,10 @@
 package org.jcmd.commands.admin;
 
-import org.jcmd.core.Command;
+import org.jcmd.core.CommandInterface;
 import org.jcmd.core.JCMD;
+import static org.jcmd.core.IO.*;
 
-public class Description implements Command {
+public class Description implements CommandInterface {
     protected final JCMD engine;
 
     private final String NAME = "desc";
@@ -28,6 +29,6 @@ public class Description implements Command {
     }
     @Override
     public void execute(String[] args) {
-        System.out.println("Project description: " + engine.PROJECT_DESCRIPTION);
+        out.println("Project description: " + engine.PROJECT_DESCRIPTION);
     }
 }

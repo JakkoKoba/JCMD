@@ -1,15 +1,16 @@
 package org.jcmd.commands.templates;
 
-import org.jcmd.core.Command;
+import org.jcmd.core.CommandInterface;
 import org.jcmd.core.JCMD;
+import static org.jcmd.core.IO.out;
 
 /**
  * Universal starting point for creating new commands.
  * Copy this file into `org.jcmd.commands` and rename the class.
  */
 
-public class Template implements Command {
-    protected final JCMD engine;
+public class Template implements CommandInterface {
+    private final JCMD engine;
 
     private final String NAME = "template";
     private final String DESCRIPTION = "Template command - replace with your own description.";
@@ -36,6 +37,6 @@ public class Template implements Command {
 
     @Override
     public void execute(String[] args) {
-        System.out.println("This is a template command. Replace with your own implementation.");
+        out.println("This is a template command. Replace with your own implementation.");
     }
 }

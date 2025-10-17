@@ -1,10 +1,11 @@
 package org.jcmd.commands.base;
 
-import org.jcmd.core.Command;
+import org.jcmd.core.CommandInterface;
 import org.jcmd.core.Variables;
 import org.jquill.Debug;
+import static org.jcmd.core.IO.out;
 
-public class Time implements Command {
+public class Time implements CommandInterface {
 
     private final String NAME = "time";
     private final String DESCRIPTION = "Displays the current system time.";
@@ -31,7 +32,7 @@ public class Time implements Command {
         }
         try {
             String time = java.time.LocalTime.now().format(java.time.format.DateTimeFormatter.ofPattern(format));
-            System.out.println(time);
+            out.println(time);
         } catch (IllegalArgumentException e) {
             Debug.error("Invalid time format pattern: " + format);
         }

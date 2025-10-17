@@ -17,14 +17,15 @@ It features a REPL (Read-Eval-Print Loop) interface, dynamic command registratio
 ## Requirements (tested)
 - Java 24.0.2
 - Maven 3.9.11
+- JQuill 1.0.0
 
 ---
 
 ## Example Usage
 
 ```java
+import org.jcmd.commands.core.Echo;
 import org.jcmd.core.JCMD;
-import org.jcmd.commands.base.*;
 
 public class Main {
 

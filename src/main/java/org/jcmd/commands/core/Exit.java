@@ -1,9 +1,10 @@
 package org.jcmd.commands.core;
 
-import org.jcmd.core.Command;
+import org.jcmd.core.CommandInterface;
 import org.jcmd.core.JCMD;
+import static org.jcmd.core.IO.out;
 
-public class Exit implements Command {
+public class Exit implements CommandInterface {
     private final JCMD engine;
 
     private final String NAME = "exit";
@@ -28,7 +29,7 @@ public class Exit implements Command {
     }
     @Override
     public void execute(String[] args) {
-        System.out.println("Exiting JCMD...");
+        out.println("Exiting JCMD...");
         engine.stop();
     }
 }

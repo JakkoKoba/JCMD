@@ -8,7 +8,6 @@ public class Main {
 
     public static void init() {
         engine.registerPackage("admin");
-        engine.registerPackage("base");
         engine.registerPackage("core");
     }
 

@@ -1,9 +1,10 @@
 package org.jcmd.commands.admin;
 
-import org.jcmd.core.Command;
+import org.jcmd.core.CommandInterface;
 import org.jcmd.core.JCMD;
+import static org.jcmd.core.IO.out;
 
-public class Version implements Command {
+public class Version implements CommandInterface {
     private final JCMD engine;
 
     private final String NAME = "version";
@@ -28,9 +29,9 @@ public class Version implements Command {
     }
     @Override
     public void execute(String[] args) {
-        System.out.println("Java Version: " + engine.JAVA_VERSION);
-        System.out.println("Maven Version: " + engine.MAVEN_VERSION);
-        System.out.println("Current JCMD version: " + engine.JCMD_VERSION);
-        System.out.println("Current JQuill version: " + engine.JQUILL_VERSION);
+        out.println("Java Version: " + engine.JAVA_VERSION);
+        out.println("Maven Version: " + engine.MAVEN_VERSION);
+        out.println("Current JCMD version: " + engine.JCMD_VERSION);
+        out.println("Current JQuill version: " + engine.JQUILL_VERSION);
     }
 }

@@ -12,11 +12,11 @@ public class PackageReg {
     public final Map<String, String> names = new HashMap<>();
     public final Map<String, String[]> registry = new HashMap<>();
 
-    private final String basePackage = "org.jcmd.commands";
+    private static String packRoot = "org.jcmd.commands";
 
     public PackageReg() {
         try {
-            String path = basePackage.replace('.', '/');
+            String path = packRoot.replace('.', '/');
             ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
             Enumeration<URL> resources = classLoader.getResources(path);
 
@@ -43,7 +43,7 @@ public class PackageReg {
     private void scanDirectory(java.io.File baseDir) {
         for (java.io.File folder : Objects.requireNonNull(baseDir.listFiles(java.io.File::isDirectory))) {
             String key = folder.getName().toLowerCase();
-            names.put(key, basePackage + "." + folder.getName());
+            names.put(key, packRoot + "." + folder.getName());
 
             String[] commands = Arrays.stream(Objects.requireNonNull(folder.listFiles((dir, name) -> name.endsWith(".class"))))
                     .map(f -> f.getName().replace(".class", ""))
@@ -69,7 +69,7 @@ public class PackageReg {
                     String pkgKey = relative.substring(0, slash).toLowerCase();
                     String className = relative.substring(slash + 1).replace(".class", "");
 
-                    names.putIfAbsent(pkgKey, basePackage + "." + relative.substring(0, slash));
+                    names.putIfAbsent(pkgKey, packRoot + "." + relative.substring(0, slash));
                     packageCommands.computeIfAbsent(pkgKey, k -> new ArrayList<>()).add(className);
                 }
             }
@@ -77,5 +77,13 @@ public class PackageReg {
 
         // Convert lists to arrays
         packageCommands.forEach((key, list) -> registry.put(key, list.toArray(new String[0])));
+    }
+
+    public static void setPackRoot(String input) {
+        packRoot = input;
+    }
+
+    public static String getPackRoot() {
+        return packRoot;
     }
 }

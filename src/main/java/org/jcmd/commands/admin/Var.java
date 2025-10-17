@@ -1,15 +1,16 @@
 package org.jcmd.commands.admin;
 
-import org.jcmd.core.Command;
+import org.jcmd.core.CommandInterface;
 import org.jcmd.core.JCMD;
 import org.jcmd.core.Variables;
 import org.jquill.Debug;
+import static org.jcmd.core.IO.*;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
-public class Var implements Command {
+public class Var implements CommandInterface {
     protected final JCMD engine;
 
     private final String NAME = "var";
@@ -56,11 +57,11 @@ public class Var implements Command {
     }
 
     private void listVariables() {
-        System.out.println("Variables and constants:\n===================================");
+        Debug.println("Variables and constants:\n===================================");
         for (Field field : Variables.class.getDeclaredFields()) {
             if (Modifier.isStatic(field.getModifiers())) {
                 try {
-                    System.out.println(field.getName() + " = " + field.get(null));
+                    out.println(field.getName() + " = " + field.get(null));
                 } catch (IllegalAccessException e) {
                     Debug.warn(field.getName() + " = <inaccessible>");
                 }
@@ -75,7 +76,7 @@ public class Var implements Command {
                 Debug.warn("Variable is not static: " + name);
                 return;
             }
-            System.out.println(name + " = " + field.get(null));
+            out.println(name + " = " + field.get(null));
         } catch (NoSuchFieldException e) {
             Debug.warn("No such variable: " + name);
         } catch (IllegalAccessException e) {

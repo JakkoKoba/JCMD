@@ -1,19 +1,20 @@
-package org.jcmd.commands.base;
+package org.jcmd.commands.core;
 
-import org.jcmd.core.Command;
+import org.jcmd.core.CommandInterface;
 import org.jcmd.core.Variables;
 import org.jquill.Debug;
+import static org.jcmd.core.IO.out;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
 
-public class Echo implements Command {
+public class Echo implements CommandInterface {
 
     private final Variables var = new Variables();
 
     private final String NAME = "echo";
     private final String DESCRIPTION = "Prints back the input text.";
-    private final String CATEGORY = "Base";
+    private final String CATEGORY = "Core";
 
     @Override
     public String getName() { return NAME; }
@@ -41,7 +42,7 @@ public class Echo implements Command {
         VAR_PREFIX_CLOSE = trimmed.substring(spaceIndex + 1).trim();
 
         if (args.length == 0) {
-            System.out.println();
+            out.println();
             return;
         }
 
@@ -97,7 +98,7 @@ public class Echo implements Command {
             start = close + VAR_PREFIX_CLOSE.length();
         }
 
-        System.out.println(result);
+        out.println(result);
     }
 
     private Method findVariableMethod(String name) {

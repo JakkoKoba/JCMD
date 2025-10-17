@@ -1,10 +1,11 @@
 package org.jcmd.commands.core;
 
-import org.jcmd.core.Command;
+import org.jcmd.core.CommandInterface;
 import org.jcmd.core.JCMD;
 import org.jquill.Debug;
+import static org.jcmd.core.IO.out;
 
-public class List implements Command {
+public class List implements CommandInterface {
     private final JCMD engine;
 
     private final String NAME = "list";
@@ -31,18 +32,18 @@ public class List implements Command {
     public void execute(String[] args) {
         if (args.length == 0) {
             // No category specified, list all commands
-            System.out.println("Available commands:");
-            for (Command c : engine.getCommands()) {
-                System.out.printf("  %-10s : (%s)%n", c.getName(), c.getCategory());
+            out.println("Available commands:");
+            for (CommandInterface c : engine.getCommands()) {
+                out.printf("  %-10s : (%s)%n", c.getName(), c.getCategory());
             }
         } else {
             // Filter by category
             String filterCategory = args[0];
-            System.out.println("Commands in category '" + filterCategory + "':");
+            out.println("Commands in category '" + filterCategory + "':");
             boolean found = false;
-            for (Command c : engine.getCommands()) {
+            for (CommandInterface c : engine.getCommands()) {
                 if (c.getCategory() != null && c.getCategory().equalsIgnoreCase(filterCategory)) {
-                    System.out.printf("  %-10s %n", c.getName());
+                    out.printf("  %-10s %n", c.getName());
                     found = true;
                 }
             }

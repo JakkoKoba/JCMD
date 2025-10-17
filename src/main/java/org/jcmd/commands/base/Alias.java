@@ -1,13 +1,13 @@
 package org.jcmd.commands.base;
 
-import org.jcmd.core.Command;
+import org.jcmd.core.CommandInterface;
 import org.jcmd.core.JCMD;
 import org.jquill.Debug;
 
 import java.util.Arrays;
 import java.util.Objects;
 
-public class Alias implements Command {
+public class Alias implements CommandInterface {
     private final JCMD engine;
     private final String ALIAS_CATEGORY = "Alias";
 
@@ -41,7 +41,7 @@ public class Alias implements Command {
         String newName = args[0];
         String targetName = args[1];
         String[] bakedArgs = Arrays.copyOfRange(args, 2, args.length);
-        Command target = engine.getCommand(targetName);
+        CommandInterface target = engine.getCommand(targetName);
 
         // Check if target command exists
         if (target == null) {
@@ -56,7 +56,7 @@ public class Alias implements Command {
         }
 
         // Create a lightweight wrapper command
-        Command alias = new Command() {
+        CommandInterface alias = new CommandInterface() {
             @Override
             public String getName() {
                 return newName;

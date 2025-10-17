@@ -3,14 +3,15 @@ package org.jcmd.core;
 import org.jcmd.commands.templates.CommandWrapper;
 import org.jquill.Debug;
 
+import java.io.PrintStream;
 import java.util.*;
 import java.util.concurrent.CountDownLatch;
 import java.util.regex.Pattern;
 
 public class JCMD {
-
-    private final Map<String, Command> commands = new TreeMap<>();
+    private final Map<String, CommandInterface> commands = new TreeMap<>();
     private final Scanner scanner = new Scanner(System.in);
+    public static final PrintStream out = System.out;
     private boolean running = true;
     private final CountDownLatch ready = new CountDownLatch(1);
 
@@ -23,7 +24,7 @@ public class JCMD {
     public static final String PROJECT_DESCRIPTION = BuildInfo.PROJECT_DESCRIPTION;
     public static final String HEADER = "Hello ${user}";
 
-    private final PackageReg pack = new PackageReg();
+    public final PackageReg pack = new PackageReg();
 
     // ------------------ Run Methods ------------------
 
@@ -40,7 +41,7 @@ public class JCMD {
         ready.countDown(); // Signal that JCMD is ready
 
         while (running) {
-            System.out.print("> ");
+            out.print("> ");
             String input = scanner.nextLine().trim();
             if (input.isEmpty()) continue; // Ignore empty input
 
@@ -54,7 +55,7 @@ public class JCMD {
                 String name = parts[0];
                 String[] args = Arrays.copyOfRange(parts, 1, parts.length);
 
-                Command command = getCommand(name);
+                CommandInterface command = getCommand(name);
                 if (command != null) {
                     try {
                         command.execute(args);
@@ -94,7 +95,7 @@ public class JCMD {
         // Basic validation
         if (input == null || input.trim().isEmpty() || !running) return;
 
-        if (showInput) System.out.println(input);
+        if (showInput) out.println(input);
 
         // Parse input
         String[] parts = input.trim().split("\\s+");
@@ -102,7 +103,7 @@ public class JCMD {
         String[] args = Arrays.copyOfRange(parts, 1, parts.length);
 
         // Find and execute command
-        Command command = commands.get(name);
+        CommandInterface command = commands.get(name);
         if (command != null) {
             try {
                 command.execute(args);
@@ -113,27 +114,27 @@ public class JCMD {
             Debug.error("Unknown command: " + name + ". Use 'list' to see all commands.");
         }
 
-        if (newLinePrefix) System.out.print("> ");
+        if (newLinePrefix) out.print("> ");
     }
 
-    // ------------------ Command Management ------------------
+    // ------------------ CommandInterface Management ------------------
 
-    public void register(Command command, String packageKey) {
-        if (command == null) throw new IllegalArgumentException("Command cannot be null");
+    public void register(CommandInterface command, String packageKey) {
+        if (command == null) throw new IllegalArgumentException("CommandInterface cannot be null");
 
         // Validate package key
         String name = command.getName();
         if (name == null || name.isEmpty())
-            throw new IllegalArgumentException("Command name cannot be null or empty");
+            throw new IllegalArgumentException("CommandInterface name cannot be null or empty");
 
         // If name already exists under a different package, namespace it
         if (commands.containsKey(name)) {
-            Command existing = commands.get(name);
+            CommandInterface existing = commands.get(name);
 
             // Only namespace if the existing command is from a different package
             if (!Objects.equals(existing.getCategory().toLowerCase(), packageKey)) {
                 String namespaced = packageKey + "." + name;
-                Debug.error("Command '" + name + "' conflicts. Registered as '" + namespaced + "'.");
+                Debug.error("CommandInterface '" + name + "' conflicts. Registered as '" + namespaced + "'.");
 
                 // Wrap the original command so getName() returns the namespaced name
                 command = new CommandWrapper(command, namespaced);
@@ -147,10 +148,10 @@ public class JCMD {
         commands.put(name, command);
     }
     public void unregister(String name) {
-        Command removed = commands.remove(name);
+        CommandInterface removed = commands.remove(name);
 
         if (removed == null) {
-            System.out.println("No such command registered: " + name);
+            Debug.warn("No such command registered: " + name);
             return;
         }
 
@@ -159,14 +160,14 @@ public class JCMD {
 
         for (String aliasName : aliasesToRemove) {
             commands.remove(aliasName);
-            System.out.println("Removed alias: " + aliasName);
+            Debug.success("Removed alias: " + aliasName);
         }
     }
 
-    public Collection<Command> getCommands() {
+    public Collection<CommandInterface> getCommands() {
         return commands.values();
     }
-    public Command getCommand(String name) {
+    public CommandInterface getCommand(String name) {
         return commands.get(name);
     }
 
@@ -174,10 +175,10 @@ public class JCMD {
 
     private List<String> getStrings(String name) {
         List<String> aliasesToRemove = new ArrayList<>();
-        for (Map.Entry<String, Command> entry : commands.entrySet()) { // Iterate over a copy to avoid ConcurrentModificationException
-            Command cmd = entry.getValue();
-            if ("Alias".equals(cmd.getCategory())) {
-                String desc = cmd.getDescription();
+        for (Map.Entry<String, CommandInterface> entry : commands.entrySet()) { // Iterate over a copy to avoid ConcurrentModificationException
+            CommandInterface command = entry.getValue();
+            if ("Alias".equals(command.getCategory())) {
+                String desc = command.getDescription();
                 if (desc != null && desc.contains("'" + name + "'")) {
                     aliasesToRemove.add(entry.getKey());
                 }
@@ -185,7 +186,7 @@ public class JCMD {
         }
         return aliasesToRemove;
     } // Used by unregister
-    public Command stringToCommand(String className) // Used by register
+    public CommandInterface stringToCommand(String className) // Used by register
             throws ReflectiveOperationException {
 
         // Ensure fully-qualified name
@@ -211,19 +212,19 @@ public class JCMD {
         // Load the class
         Class<?> clazz = Class.forName(className);
 
-        // Verify it implements Cmd
-        if (!Command.class.isAssignableFrom(clazz)) {
-            throw new IllegalArgumentException(className + " does not implement Command");
+        // Verify it implements CommandInterface
+        if (!CommandInterface.class.isAssignableFrom(clazz)) {
+            throw new IllegalArgumentException(className + " does not implement CommandInterface");
         }
 
-        Command instance;
+        CommandInterface instance;
 
         try {
             // Try constructor with JCMD parameter
-            instance = (Command) clazz.getConstructor(JCMD.class).newInstance(this);
+            instance = (CommandInterface) clazz.getConstructor(JCMD.class).newInstance(this);
         } catch (NoSuchMethodException e) {
             // Fall back to no-arg constructor
-            instance = (Command) clazz.getConstructor().newInstance();
+            instance = (CommandInterface) clazz.getConstructor().newInstance();
         }
         return instance;
     }
@@ -243,8 +244,8 @@ public class JCMD {
         // Register each command in the package
         for (String className : classNames) {
             try {
-                Command cmd = stringToCommand(packageName + "." + className);
-                register(cmd, key.toLowerCase()); // Pass package key for namespacing
+                CommandInterface command = stringToCommand(packageName + "." + className);
+                register(command, key.toLowerCase()); // Pass package key for namespacing
             } catch (Exception e) {
                 Debug.error("Failed to register: " + className + " -> " + e.getMessage());
             }

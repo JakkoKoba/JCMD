@@ -2,11 +2,11 @@ package org.jcmd.commands.templates;
 
 import org.jcmd.core.*;
 
-public class CommandWrapper implements Command {
-    private final Command original;
+public class CommandWrapper implements CommandInterface {
+    private final CommandInterface original;
     private final String overriddenName;
 
-    public CommandWrapper(Command original, String overriddenName) {
+    public CommandWrapper(CommandInterface original, String overriddenName) {
         this.original = original;
         this.overriddenName = overriddenName;
     }
