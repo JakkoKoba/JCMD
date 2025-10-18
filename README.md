@@ -44,7 +44,7 @@ public class Main {
 JCMD started. Type 'exit' to leave.
 > echo Hello ${date yyyy}!
 Hello World 2025!
-> command -reg org.jcmd.commands.base.date
+> command -reg base.date
 Command registered: date
 > alias year date YYYY
 alias created: year -> date YYYY

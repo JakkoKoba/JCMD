@@ -4,8 +4,6 @@ import java.time.LocalTime;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.UnsupportedTemporalTypeException;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Variables {
 
@@ -14,6 +12,7 @@ public class Variables {
     public static String DATE_FORMAT = "yyyy-MM-dd";
     public static String VAR_PREFIX = "${ }"; // Prefix must include space
     public static String NEW_COMMAND_PREFIX = "||";
+    public static String COMMAND_ROOT = PackageReg.getPackRoot();
 
     // CommandInterface Registration Flags
     public static String REGISTER_FLAG = "-reg";

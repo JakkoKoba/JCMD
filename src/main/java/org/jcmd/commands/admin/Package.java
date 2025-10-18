@@ -5,12 +5,14 @@ import org.jcmd.core.JCMD;
 import org.jcmd.core.Variables;
 import org.jquill.Debug;
 
+import java.util.Objects;
+
 public class Package implements CommandInterface {
     private final JCMD engine;
 
-    private final String NAME = "package";
-    private final String DESCRIPTION = "Register and unregister packages.";
-    private final String CATEGORY = "Admin";
+    private static final String NAME = "package";
+    private static final String DESCRIPTION = "Register and unregister packages.";
+    private static final String CATEGORY = "Admin";
 
     public Package(JCMD engine) {
         this.engine = engine;
@@ -31,25 +33,38 @@ public class Package implements CommandInterface {
         return CATEGORY;
     }
 
+    private void warn() {
+        Debug.warn("Unknown usage of '" + NAME + "'");
+        Debug.info(NAME + " " + Variables.REGISTER_FLAG + " <package>");
+        Debug.info(NAME + " " + Variables.UNREGISTER_FLAG + " <package>");
+    }
+
     @Override
     public void execute(String[] args) {
-        String REGISTER_FLAG = Variables.REGISTER_FLAG;
-        String UNREGISTER_FLAG = Variables.UNREGISTER_FLAG;
-
-        String packageName = args[1];
-
-        if (args.length == 2 && REGISTER_FLAG.equalsIgnoreCase(args[0])) {
-            // If package doesn't exist in your registry, warn
-            if (engine.pack.registry.get(packageName.toLowerCase()) == null) {
-                Debug.warn("Unknown package: " + packageName);
-                return;
-            }
-            if (engine.pack.registry.get(packageName.toLowerCase()) == null) {
-                Debug.warn("Unknown package: " + packageName);
-                return;
-            }
+        if (args == null || args.length < 2) {
+            warn();
+            return;
         }
 
-        engine.registerPackage(packageName);
+        String flag = args[0];
+        String packageName = args[1].toLowerCase();
+
+        boolean knownPackage = engine.pack.registry.containsKey(packageName);
+        if (!knownPackage) {
+            Debug.warn("Unknown package: " + packageName);
+            return;
+        }
+
+        if (Objects.equals(flag, Variables.REGISTER_FLAG)) {
+            engine.registerPackage(packageName, true);
+            return;
+        }
+
+        if (Objects.equals(flag, Variables.UNREGISTER_FLAG)) {
+            engine.unregisterPackage(packageName, true);
+            return;
+        }
+
+        warn();
     }
 }

@@ -231,7 +231,14 @@ public class JCMD {
 
     // ------------------ Package Registration ------------------
 
+    private void message(String className) {
+        Debug.info("Registered " + className);
+    }
+
     public void registerPackage(String key) {
+        registerPackage(key, false);
+    }
+    public void registerPackage(String key, boolean showRegister) {
         String[] classNames = pack.registry.get(key.toLowerCase());
         String packageName = pack.names.get(key.toLowerCase());
 
@@ -246,8 +253,37 @@ public class JCMD {
             try {
                 CommandInterface command = stringToCommand(packageName + "." + className);
                 register(command, key.toLowerCase()); // Pass package key for namespacing
+                if (showRegister) {
+                    message(className);
+                }
             } catch (Exception e) {
                 Debug.error("Failed to register: " + className + " -> " + e.getMessage());
+            }
+        }
+    }
+
+    public void unregisterPackage(String key) {
+        unregisterPackage(key, false);
+    }
+    public void unregisterPackage(String key, boolean showUnregister) {
+        String[] classNames = pack.registry.get(key.toLowerCase());
+        String packageName = pack.names.get(key.toLowerCase());
+
+        // Validate package key
+        if (classNames == null || packageName == null) {
+            Debug.error("Unknown package key: " + key);
+            return;
+        }
+
+        // Register each command in the package
+        for (String className : classNames) {
+            try {
+                unregister(className); // Pass package key for namespacing
+                if (showUnregister) {
+                    message(className);
+                }
+            } catch (Exception e) {
+                Debug.error("Failed to unregister: " + className + " -> " + e.getMessage());
             }
         }
     }

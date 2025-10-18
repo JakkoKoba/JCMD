@@ -2,6 +2,7 @@ package org.jcmd.commands.admin;
 
 import org.jcmd.core.CommandInterface;
 import org.jcmd.core.JCMD;
+import org.jcmd.core.PackageReg;
 import org.jcmd.core.Variables;
 import org.jquill.Debug;
 
@@ -70,7 +71,7 @@ public class Command implements CommandInterface {
         if (action.equals(REGISTER_FLAG)) {
             try {
                 // Convert string to CommandInterface instance
-                CommandInterface commandInstance = engine.stringToCommand("org.jcmd.commands." + target);
+                CommandInterface commandInstance = engine.stringToCommand(PackageReg.getPackRoot() + target);
 
                 // Determine package key
                 String packageKey = commandInstance.getClass().getPackage().getName();
