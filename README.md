@@ -5,7 +5,8 @@ It features a REPL (Read-Eval-Print Loop) interface, dynamic command registratio
 
 ---
 
-## Features
+## ✨ Features
+
 - Modular command registration and execution
 - Interactive REPL interface
 - Extensible design: easily add new commands
@@ -14,12 +15,31 @@ It features a REPL (Read-Eval-Print Loop) interface, dynamic command registratio
 
 ---
 
-## Requirements (tested)
+## 🧩 Requirements (tested)
 - Java 24.0.2
 - Maven 3.9.11
 - JQuill 1.0.0
 
 ---
+
+## ⚙️ Installation
+
+1. Clone the repository:
+```bash
+git clone https://github.com/JakkoKoba/jcmd.git
+```
+2. Navigate to the project directory:
+```bash
+cd jcmd
+```
+3. Building with maven:
+```bash
+mvn clean package
+```
+4. Run the CLI:
+```bash
+java -jar target/jcmd-0.1.3.jar
+```
 
 ## Example Usage
 
@@ -54,41 +74,39 @@ alias created: year -> date YYYY
 Exiting CLI...
 ```
 
-## Available Commands
-
-#### Core Package:
-- `exit` — Stops the CLI
-- `help` — Get information about commands
-- `list` — Lists available commands
-#### Base Package:
-- `alias` — Create command aliases
-- `date` — Displays the current date
-- `echo` — Print messages to the console
-- `time` — Displays the current time
-#### Admin Package:
-- `command` — Register/Unregister commands
-- `desc` - Print the project description
-- `env` — Print environment variables
-- `name` — Displays the project name
-- `version` — Shows JCMD version
-
 ---
 
-## Getting Started
+### Core Package
 
-1. Clone the repository:
-```bash
-git clone https://github.com/JakkoKoba/jcmd.git
-```
-2. Navigate to the project directory:
-```bash
-cd jcmd
-```
-3. Building with maven:
-```bash
-mvn clean package
-```
-4. Run the CLI:
-```bash
-java -jar target/jcmd-0.1.3.jar
-```
+| Command | Description                  |
+|---------|------------------------------|
+| `exit`  | Stops the CLI                |
+| `help`  | Get information about commands |
+| `list`  | Lists available commands     |
+
+### Base Package
+
+| Command | Description                  |
+|---------|------------------------------|
+| `alias` | Create command aliases       |
+| `date`  | Displays the current date    |
+| `echo`  | Print messages to the console|
+| `time`  | Displays the current time    |
+
+### Admin Package
+
+| Command   | Description                     |
+|-----------|---------------------------------|
+| `command` | Register/Unregister commands    |
+| `desc`    | Print the project description   |
+| `env`     | Print environment variables     |
+| `name`    | Displays the project name       |
+| `version` | Shows JCMD version              |
+
+
+
+### 🧭 License
+
+Released under the [MIT License](LICENSE).
+
+© 2025 Jakko Koba
